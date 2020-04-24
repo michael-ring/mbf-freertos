@@ -32,10 +32,9 @@ or
 
     git clone git@github.com:graemeg/freepascal.git
 
-    cd freepascal
-
 to install arm-freertos target side-by side in a fpcupdeluxe installation do the following steps:
 
+    cd freepascal
     DELUXEDIR=$HOME/fpcupdeluxe (Change this directory to match your environment)
     BINDIR=${DELUXEDIR}/fpc/bin/x86_64-darwin (Change this directory to match your platform)
 

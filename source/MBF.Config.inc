@@ -53,13 +53,7 @@
 
 //{$STATIC ON}
 
-{$IFNDEF EMBEDDED}
-  {$ERROR MBF Framework can only be used for target embedded}
-{$ENDIF}
-
-{$INCLUDE MBF.Boards.STM32F1.inc}
 {$INCLUDE MBF.Boards.STM32F4.inc}
-{$INCLUDE MBF.Boards.STM32G0.inc}
 
 {$IFNDEF __CONTROLLERTYPE__}
   {$ERROR Unfortunately MBF has not yet been ported to your Embedded Controller}
