@@ -1,0 +1,2 @@
+#Boardname	SubArch		Chipname (JLink)	SVD File
+nucleof401re 	ARMV7EM		stm32f401re		STM32F401.svd
