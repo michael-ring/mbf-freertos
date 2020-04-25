@@ -85,17 +85,18 @@ type
   TClockType = (HSI,HSE,PLLHSI,PLLHSE);
 
 type
+  TOSCParameters = record
+    FREQUENCY : longWord;
+    PLLM : byte;
+    PLLN : word;
+    PLLP : byte;
+    PLLQ : byte;
+    PLLR : byte;
+    AHBPRE : byte;
+  end;
+
+type
   TSTM32SystemCore = record helper for TSystemCore
-  type
-    TOSCParameters = record
-      FREQUENCY : longWord;
-      PLLM : byte;
-      PLLN : word;
-      PLLP : byte;
-      PLLQ : byte;
-      PLLR : byte;
-      AHBPRE : byte;
-    end;
   private
     procedure ConfigureSystem;
     function GetFrequencyParameters(aHCLKFrequency : longWord;aClockType : TClockType):TOSCParameters;
@@ -115,11 +116,15 @@ type
 
 var
   SystemCore : TSystemCore;
+  //This var is needed to communicate CPU Speed to FreeRTOS
+  SystemCoreClock : uint32; cvar;
 
 implementation
 
 uses
-  cortexm4,MBF.BitHelpers;
+  cortexm4,
+  freertos,
+  MBF.BitHelpers;
 
 {$DEFINE IMPLEMENTATION}
 {$INCLUDE MBF.ARM.SystemCore.inc}
@@ -154,8 +159,6 @@ begin
 end;
 
 function TSTM32SystemCore.GetHCLKFrequency : longWord;
-var
-  temp : longWord;
 begin
   Result := getSYSCLKFrequency div AHBDividers[getNibble(RCC.CFGR,4)];
 end;
@@ -224,8 +227,6 @@ begin
 end;
 
 procedure TSTM32SystemCore.ConfigureSystem;
-var
-  temp : longWord;
 begin
   //PWR Enable PWR Subsystem Clock
   setBit(RCC.APB1ENR,28);
@@ -457,6 +458,7 @@ begin
       until getCrumb(RCC.CFGR,2) = byte(TClockType.PLLHSI);
     end;
   end;
+  SystemCoreClock := getHCLKFrequency;
   ConfigureTimer;
 end;
 
@@ -473,4 +475,5 @@ end;
 {$ENDREGION}
 
 begin
+  SystemCoreClock := HSIClockFrequency;
 end.

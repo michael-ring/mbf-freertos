@@ -42,7 +42,6 @@ type
   const
     TimerResolutionMask = $0fffffff;
 
-  var
   private
     function convertMicrosecondsToCoreTicks(MicroSeconds : TMicroSeconds) : TTickCounter;
     procedure setCoreTimerValue(value : longWord);
@@ -53,6 +52,8 @@ type
     procedure Configure;
     procedure RegUnlock;
     procedure RegLock;
+    procedure EnterCriticalSection;
+    procedure ExitCriticalSection;
     procedure ConfigureTimer;
     procedure ConfigureInterrupts;
     { Returns the current value of system timer, in microseconds. }
@@ -60,10 +61,6 @@ type
 
     { Calculates the difference between two system timer values with proper handling of overflows. }
     function TicksInBetween(const InitTicks, EndTicks: TTickCounter): TTickCounter;
-
-    { Waits the specified amount of milliseconds accurately by continuously polling the timer.
-      This is useful for accurate timing but may result in high CPU usage. }
-    procedure BusyWait(const Milliseconds: TMilliseconds);
 
     { Delays the execution for the specified amount of microseconds. }
     procedure MicroDelay(const Microseconds: TMicroseconds);
@@ -81,9 +78,7 @@ implementation
 {$ENDIF}
 {$IF DEFINED(IMPLEMENTATION)}
 var
-  SysTickCounter: TTickCounter = 0;
   TicksPerMillisecond : TTickCounter = 4000;
-  SysTickOverflow : TTickCounter = 0;
 
 procedure TSystemCore.setCoreTimerReloadCompare(value : longWord);
   begin
@@ -98,20 +93,15 @@ procedure TSystemCore.setCoreTimerReloadCompare(value : longWord);
   procedure TSystemCore.setCoreTimerValue(value : longWord);
   begin
     Systick.VAL := value;
-    SysTickOverflow := 0;
   end;
 
   function TSystemCore.getCoreTimerValue: longWord;
   begin
+    //TODO does this still work ??
     //Create a full 32 Bit Countervalue on Arm to make it behave the same as MIPS for Microsecond Delays
-    Result := SysTickOverflow + (TicksPerMillisecond-SysTick.VAL);
+    Result := TicksPerMillisecond-SysTick.VAL;
   end;
 
-procedure SysTick_interrupt; interrupt; [public, alias: 'SysTick_interrupt'];
-begin
-  Inc(SysTickCounter);
-  Inc(SysTickOverflow,TicksPerMilliSecond);
-end;
 
 {$REGION 'TSystemCore'}
 
@@ -133,13 +123,29 @@ end;
 
 procedure TSystemCore.Reglock;
 begin
+  //We need to put Register Locking into a Critical Section so that the unlock timing does not get screwed up
+  EnterCriticalSection;
+  ExitCriticalSection;
+end;
 
+procedure TSystemCore.EnterCriticalSection;
+begin
+  vPortEnterCritical;
+end;
+
+procedure TSystemCore.ExitCriticalSection;
+begin
+  vPortExitCritical;
 end;
 
 procedure TSystemCore.ConfigureTimer;
+var
+  TickIRQStatus : TBitValue;
 begin
+  TickIRQStatus := GetBit(SysTick.CTRL,1);
   SysTick.CTRL := 0;
   TicksPerMillisecond := GetSysTickClockFrequency div 1000;
+  //TODO Debug into FreeRTOS to see how we chan change SysTick Timing when CPU Frequency changes
   if (TicksPerMillisecond>$FFFFFF) then
   begin
     //Slow Down Systick by Value of 8
@@ -152,7 +158,11 @@ begin
 
   setCoreTimerReloadCompare(TicksPerMillisecond - 1);
   setCoreTimerValue(0);
-  SetCrumb(SysTick.CTRL,%11,0);
+  // Do not enable Interrupts when not currently enabled, this will give FreeRTOS the control on when to enable Systicks
+  if TickIRQStatus = 1 then
+    SetCrumb(SysTick.CTRL,%11,0)
+  else
+    SetCrumb(SysTick.CTRL,%01,0);
 end;
 
 procedure TSystemCore.ConfigureInterrupts;
@@ -161,7 +171,7 @@ end;
 
 function TSystemCore.GetTickCount: TTickCounter;
 begin
-  Result := SysTickCounter;
+  Result := xTaskGetTickCount;
 end;
 
 
@@ -177,6 +187,7 @@ var
   StartTicks : TTickCounter;
   TickCount : TTickCounter;
 begin
+  //TODO Is this still good to do in a RTOS?
   StartTicks := GetCoreTimerValue;
   TickCount := convertMicroSecondsToCoreTicks(Microseconds);
   if (TickCount=0) then exit;
@@ -184,35 +195,10 @@ begin
     ;
 end;
 
-procedure TSystemCore.BusyWait(const MilliSeconds: TMilliSeconds);
-var
-  StartTicks: TMilliSeconds;
-begin
-  //To keep error below 10% do MicroDelay for short times
-  if MilliSeconds < 10 then
-    MicroDelay(MilliSeconds*1000)
-  else
-  begin
-    StartTicks := GetTickCount;
-    while TicksInBetween(StartTicks, GetTickCount) < Milliseconds do ;
-  end;
-end;
-
 procedure TSystemCore.Delay(const MilliSeconds: TMilliseconds);
-var
-  StartTicks : TTickCounter;
 begin
-  //To keep error below 10% do busywait for short times
-  if MilliSeconds < 10 then
-    MicroDelay(MilliSeconds*1000)
-  else
-  begin
-    StartTicks := GetTickCount;
-    while TicksInBetween(StartTicks, GetTickCount) < Milliseconds do
-    asm
-      wfi // wait for interrupt
-    end;
-  end;
+  //FreeRTOS included in MBF is preconfigured to work with a Tick Frequency of 1ms
+  vTaskDelay(MilliSeconds);
 end;
 
 function TSystemCore.GetSysTickClockFrequency: longWord; external name 'MBF_GetSysTickClockFrequency';

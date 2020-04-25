@@ -13,26 +13,43 @@ program Blinky;
   License for more details.
 }
 
-{< Demo program for GPIO functionalities. }
+{ Demo program for GPIO functionalities. }
 
 {$INCLUDE MBF.Config.inc}
 
 uses
   MBF.__CONTROLLERTYPE__.SystemCore,
-  MBF.__CONTROLLERTYPE__.GPIO;
+  MBF.__CONTROLLERTYPE__.GPIO,
+  freertos.heap_4,
+  freertos;
 
+var
+  BlinkyTaskHandle : TTaskHandle;
+
+procedure BlinkyTask({%H-}pvParameters:pointer);
 begin
-  SystemCore.Initialize;
-  //SystemCore.SetCPUFrequency(SystemCore.getMaxCPUFrequency);
-
-  GPIO.Initialize;
-  GPIO.PinMode[TArduinoPin.D13] := TPinMode.Output;
-
-  repeat
+  while true do
+  begin
     GPIO.PinValue[TArduinoPin.D13] := 1;
     SystemCore.Delay(500);
     GPIO.PinValue[TArduinoPin.D13] := 0;
     SystemCore.Delay(500);
+  end;
+  //In case we ever break out the while loop the task must end itself
+  vTaskDelete(nil);
+end;
+
+begin
+  SystemCore.Initialize;
+  SystemCore.SetCPUFrequency(SystemCore.getMaxCPUFrequency);
+
+  GPIO.Initialize;
+  GPIO.PinMode[TArduinoPin.D13] := TPinMode.Output;
+  BlinkyTaskHandle := nil;
+  xTaskCreate(@BlinkyTask,'BlinkyTask',$200,nil,0,BlinkyTaskHandle);
+  vTaskStartScheduler;
+
+  repeat
   until 1=0;
 end.
 
