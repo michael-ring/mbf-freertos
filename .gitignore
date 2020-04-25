@@ -33,6 +33,7 @@ lib/
 *.app/
 
 # User specific files from Segger Ozone
+*.jdebug
 *jdebug.user
 
 # Visual Studio Code directories
@@ -42,3 +43,7 @@ lib/
 .idea
 
 lib/
+
+*.lpi
+fpcdebug.txt
+ppas.sh

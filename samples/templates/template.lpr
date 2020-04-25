@@ -16,9 +16,9 @@ program %%APPNAME%%;
 {$INCLUDE MBF.Config.inc}
 
 uses
-  HeapMgr,
   MBF.Types,
-  MBF.__CONTROLLERTYPE__.SystemCore;
+  MBF.__CONTROLLERTYPE__.SystemCore,
+  freertos;
 
 begin
   SystemCore.Initialize;

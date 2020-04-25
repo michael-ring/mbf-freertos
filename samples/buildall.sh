@@ -11,9 +11,11 @@ ls -1 */*${FILTER}*lpi | while read lpi ; do
     lazbuild --build-all $(basename $lpi) >../compile
     if [ "$?" != "0" ]; then
       echo "[FAILED]"
+      rm -f ../compile 2>/dev/null
     else
       printf "[OK]    "
       cat ../compile  | grep "lines compiled" | sed "s~^.*sec,~~g"
+      rm -f ../compile 2>/dev/null
     fi
   fi
 done
