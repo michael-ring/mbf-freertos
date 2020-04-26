@@ -7,6 +7,7 @@ mkdir -p lib/cortexm4f   2>/dev/null
 rm -f lib/cortexm0p/* 2>/dev/null
 rm -f lib/cortexm3/*  2>/dev/null
 rm -f lib/cortexm4f/* 2>/dev/null
+rm -f lib/libfreertos* 2>/dev/null
 
 echo "Compiling FreeRTOS for CortexM0+"
 cp samples/templates/FreeRTOSConfig.h.cortexm0p FreeRTOSConfig.h
@@ -21,6 +22,8 @@ arm-none-eabi-gcc "$FREERTOSDIR/queue.c"                      $FLAGS -o lib/cort
 arm-none-eabi-gcc "$FREERTOSDIR/stream_buffer.c"              $FLAGS -o lib/cortexm0p/stream_buffer.o
 arm-none-eabi-gcc "$FREERTOSDIR/tasks.c"                      $FLAGS -o lib/cortexm0p/tasks.o
 arm-none-eabi-gcc "$FREERTOSDIR/timers.c"                     $FLAGS -o lib/cortexm0p/timers.o
+arm-none-eabi-ar rcs lib/libfreertos_cortexm0p.a lib/cortexm0p/port.o lib/cortexm0p/event_groups.o lib/cortexm0p/list.o lib/cortexm0p/queue.o lib/cortexm0p/stream_buffer.o lib/cortexm0p/tasks.o lib/cortexm0p/timers.o
+arm-none-eabi-ar rcs lib/libfreertos_heap_4_cortexm0p.a lib/cortexm0p/heap_4.o
 
 echo "Compiling FreeRTOS for CortexM3"
 cp samples/templates/FreeRTOSConfig.h.cortexm3 FreeRTOSConfig.h
@@ -35,6 +38,8 @@ arm-none-eabi-gcc "$FREERTOSDIR/queue.c"                      $FLAGS -o lib/cort
 arm-none-eabi-gcc "$FREERTOSDIR/stream_buffer.c"              $FLAGS -o lib/cortexm3/stream_buffer.o
 arm-none-eabi-gcc "$FREERTOSDIR/tasks.c"                      $FLAGS -o lib/cortexm3/tasks.o
 arm-none-eabi-gcc "$FREERTOSDIR/timers.c"                     $FLAGS -o lib/cortexm3/timers.o
+arm-none-eabi-ar rcs lib/libfreertos_cortexm3.a lib/cortexm3/port.o lib/cortexm3/event_groups.o lib/cortexm3/list.o lib/cortexm3/queue.o lib/cortexm3/stream_buffer.o lib/cortexm3/tasks.o lib/cortexm3/timers.o
+arm-none-eabi-ar rcs lib/libfreertos_heap_4_cortexm3.a lib/cortexm3/heap_4.o
 
 echo "Compiling FreeRTOS for CortexM4F"
 cp samples/templates/FreeRTOSConfig.h.cortexm4f FreeRTOSConfig.h
@@ -48,5 +53,7 @@ arm-none-eabi-gcc "$FREERTOSDIR/queue.c"                      $FLAGS -o lib/cort
 arm-none-eabi-gcc "$FREERTOSDIR/stream_buffer.c"              $FLAGS -o lib/cortexm4f/stream_buffer.o
 arm-none-eabi-gcc "$FREERTOSDIR/tasks.c"                      $FLAGS -o lib/cortexm4f/tasks.o
 arm-none-eabi-gcc "$FREERTOSDIR/timers.c"                     $FLAGS -o lib/cortexm4f/timers.o
+arm-none-eabi-ar rcs lib/libfreertos_cortexm4f.a lib/cortexm4f/port.o lib/cortexm4f/event_groups.o lib/cortexm4f/list.o lib/cortexm4f/queue.o lib/cortexm4f/stream_buffer.o lib/cortexm4f/tasks.o lib/cortexm4f/timers.o
+arm-none-eabi-ar rcs lib/libfreertos_heap_4_cortexm4f.a lib/cortexm4f/heap_4.o
 
 rm -f FreeRTOSConfig.h
