@@ -20,11 +20,7 @@ program Blinky;
 uses
   MBF.__CONTROLLERTYPE__.SystemCore,
   MBF.__CONTROLLERTYPE__.GPIO,
-  freertos.heap_4,
   freertos;
-
-var
-  BlinkyTaskHandle : TTaskHandle;
 
 procedure BlinkyTask({%H-}pvParameters:pointer);
 begin
@@ -39,15 +35,20 @@ begin
   vTaskDelete(nil);
 end;
 
+var
+  BlinkyTaskHandle : TTaskHandle;
+  BlinkyTaskTCB : TStaticTask;
+  BlinkyTaskStack : array[0..configMINIMAL_STACK_SIZE-1] of TStackType;
 begin
   SystemCore.Initialize;
   SystemCore.SetCPUFrequency(SystemCore.getMaxCPUFrequency);
 
   GPIO.Initialize;
   GPIO.PinMode[TArduinoPin.D13] := TPinMode.Output;
-  BlinkyTaskHandle := nil;
-  xTaskCreate(@BlinkyTask,'BlinkyTask',$200,nil,0,BlinkyTaskHandle);
-  vTaskStartScheduler;
+  //Create a Static Task, This way FreeRTOS does not need to allocate Memory
+  BlinkyTaskHandle := xTaskCreateStatic(@BlinkyTask,'BlinkyTask',configMINIMAL_STACK_SIZE,nil,1,@BlinkyTaskStack,@BlinkyTaskTCB);
+  if BlinkyTaskHandle <> nil then
+    vTaskStartScheduler;
 
   repeat
   until 1=0;
