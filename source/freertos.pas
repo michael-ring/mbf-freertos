@@ -1,31 +1,16 @@
 unit freertos;
-{$if defined(CPUARMV6M)}
-{$LINK cortexm0p/port.o}
-{$LINK cortexm0p/list.o}
-{$LINK cortexm0p/tasks.o}
-{$LINK cortexm0p/timers.o}
-{$LINK cortexm0p/queue.o}
-{$elseif defined(CPUARMV7M)}
-{$LINK cortexm3/port.o}
-{$LINK cortexm3/list.o}
-{$LINK cortexm3/tasks.o}
-{$LINK cortexm3/timers.o}
-{$LINK cortexm3/queue.o}
-{$elseif defined(CPUARMV7EM)}
-{$LINK cortexm4f/port.o}
-{$LINK cortexm4f/list.o}
-{$LINK cortexm4f/tasks.o}
-{$LINK cortexm4f/timers.o}
-{$LINK cortexm4f/queue.o}
-
-//{$if defined(CPUARMV6M) or defined(CPUARMV7M) or defined(CPUARMV7EM)}
-//{$LINK port.o}
-//{$LINK list.o}
-//{$LINK tasks.o}
-//{$LINK timers.o}
-//{$LINK queue.o}
+{$if defined(CPUARM)}
+  {$if defined(CPUARMV6M)}
+    {$LINK libfreertos_cortexm0p.a}
+  {$elseif defined(CPUARMV7M)}
+    {$LINK libfreertos_cortexm3.a}
+  {$elseif defined(CPUARMV7EM)}
+    {$LINK libfreertos_cortexm4f.a}
+  {$else}
+    {$Error No FreeRTOS library available for this subarch}
+  {$endif}
 {$else}
-  {$Error  No FreeRTOS found for this subarch} 
+  {$ERROR No FreeRTOS support currently available for this arch}
 {$endif}
 interface
 
@@ -33,7 +18,9 @@ interface
 type
   Tsize = uint32;
   TStackType = uint32;
+  TStackTypeArray = array of TStackType;
   pTStackType = ^TStackType;
+  pTStackTypeArray = ^TStackTypeArray;
   TBaseType = int32;
   TUBaseType = uint32;
   TTickType = uint32;
@@ -205,7 +192,7 @@ type
   TQueueSetMemberHandle = ^TQueueDefinition;
 
 function  xTaskCreate(pxTaskCode:TTaskFunction; pcName:pChar; usStackDepth:uint16; pvParameters:pointer; uxPriority:TUBaseType; var pxCreatedTask:TTaskHandle):TBaseType;external;
-function  xTaskCreateStatic(pxTaskCode:TTaskFunction; pcName:pChar; ulStackDepth:uint32; pvParameters:pointer; uxPriority:TUBaseType; var puxStackBuffer:TStackType; var pxTaskBuffer:TStaticTask):TTaskHandle;external;
+function  xTaskCreateStatic(pxTaskCode:TTaskFunction; pcName:pChar; ulStackDepth:uint32; pvParameters:pointer; uxPriority:TUBaseType; puxStackBuffer:pTStackTypeArray; pxTaskBuffer:pTStaticTask):TTaskHandle;external;
 procedure vTaskAllocateMPURegions(xTask:TTaskHandle; var pxRegions:TMemoryRegion);external;
 procedure vTaskDelete(xTaskToDelete:TTaskHandle);external;
 procedure vTaskDelay(xTicksToDelay:TTickType);external;
@@ -352,6 +339,16 @@ var
   uxIdleTaskStack : array[0..configMINIMAL_STACK_SIZE-1] of TStackType; 
   xTimerTaskTCB : TStaticTask;
   uxTimerTaskStack : array[0..configTIMER_TASK_STACK_DEPTH-1] of TStackType;
+
+procedure vPortFree; external name 'vPortFree';
+
+procedure vPortFreeStub; assembler; nostackframe;
+asm
+  .long vPortFree
+  .weak vPortFree
+  .set  vPortFree,vPortFreeStub
+  bkpt
+end;
 
 function memset(pxBuffer:pointer; value : uint32; count : Tsize):pointer;
 begin

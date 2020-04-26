@@ -1,18 +1,19 @@
 unit freertos.heap_4;
-{$if defined(CPUARMV6M)}
-{$LINK cortexm0p/heap_4.o}
-{$elseif defined(CPUARMV7M)}
-{$LINK cortexm3/heap_4.o}
-{$elseif defined(CPUARMV7EM)}
-{$LINK cortexm4f/heap_4.o}
+{$if defined(CPUARM)}
+  {$if defined(CPUARMV6M)}
+    {$LINK libfreertos_heap_4_cortexm0p.a}
+  {$elseif defined(CPUARMV7M)}
+    {$LINK libfreertos_heap_4_cortexm3.a}
+  {$elseif defined(CPUARMV7EM)}
+    {$LINK libfreertos_heap_4_cortexm4f.a}
+  {$else}
+    {$Error  No FreeRTOS library available for this subarch}
+  {$endif}
 {$else}
-  {$Error  No FreeRTOS found for this subarch}
+  {$ERROR No FreeRTOS support currently available for current arch}
 {$endif}
+
 interface
-//void *pvPortMalloc( size_t xWantedSize )
-//void vPortFree( void *pv )
-//size_t xPortGetFreeHeapSize( void )
-//size_t xPortGetMinimumEverFreeHeapSize( void )
 
 function  pvPortMalloc(const xWantedSize : uint32):pointer; external;
 procedure vPortFree(var pv : pointer); external;
@@ -20,5 +21,5 @@ function  xPortGetFreeHeapSize:uint32; external;
 function  xPortGetMinimumEverFreeHeapSize:uint32; external;
 
 implementation
-
+begin
 end.
