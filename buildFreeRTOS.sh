@@ -65,3 +65,4 @@ arm-none-eabi-ar rcs lib/armv7em/libfreertos.a lib/armv7em/port.o lib/armv7em/ev
 arm-none-eabi-ar rcs lib/armv7em/libfreertos_heap_4.a lib/armv7em/heap_4.o
 
 rm -f FreeRTOSConfig.h
+rm -f tasks.d
