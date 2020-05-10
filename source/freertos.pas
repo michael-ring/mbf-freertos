@@ -44,6 +44,7 @@ const
   configMINIMAL_STACK_SIZE=128;
   configTIMER_TASK_STACK_DEPTH=256;
   tskNO_AFFINITY=$7FFFFFFF;
+  tskIDLE_PRIORITY=0;
 
 // Definitions coming from FreeRTOS.h
 type
@@ -426,6 +427,9 @@ function  eTaskConfirmSleepModeStatus:TeSleepModeStatus;external;
 function  pvTaskIncrementMutexHeldCount:TTaskHandle;external;
 procedure vTaskInternalSetTimeOutState(var pxTimeOut:TTimeOut);external;
 
+procedure taskYield; external name 'vPortYield';
+procedure taskYieldFromISR(pxHigherPriorityTaskWoken : pTBaseType); inline;
+
 // routines from list.h
 (*
 procedure vListInitialise(var pxList:TList);external;
@@ -550,10 +554,10 @@ procedure vSemaphoreDelete(xSemaphore : TSemaphoreHandle);
 function  uxSemaphoreGetCount(xSemaphore : TSemaphoreHandle) : TUBaseType;
 function  xSemaphoreGetMutexHolder(xMutex : TSemaphoreHandle) : TTaskHandle;
 function  xSemaphoreGive(xSemaphore :TSemaphoreHandle) : TBaseType;
-function  xSemaphoreGiveFromISR(xSemaphore :  TSemaphoreHandle;var pxHigherPriorityTaskWoken : TBaseType) : TBaseType;
+function  xSemaphoreGiveFromISR(xSemaphore :  TSemaphoreHandle;pxHigherPriorityTaskWoken : pTBaseType) : TBaseType;
 function  xSemaphoreGiveRecursive(xMutex : TSemaphoreHandle) : TBaseType;
 function  xSemaphoreTake(xSemaphore : TSemaphoreHandle;xTicksToWait : TTickType) : TBaseType;
-function  xSemaphoreTakeFromISR(xSemaphore : TSemaphoreHandle; var pxHigherPriorityTaskWoken : TBaseType ) : TBaseType;
+function  xSemaphoreTakeFromISR(xSemaphore : TSemaphoreHandle; pxHigherPriorityTaskWoken : pTBaseType ) : TBaseType;
 function  xSemaphoreTakeRecursive(xMutex : TSemaphoreHandle;xTicksToWait:TTickType) : TBaseType;
 
 procedure vPortEndScheduler; external;
@@ -830,7 +834,7 @@ begin
 
 end;
 
-function  xSemaphoreGiveFromISR(xSemaphore :  TSemaphoreHandle;var pxHigherPriorityTaskWoken : TBaseType) : TBaseType; inline;
+function  xSemaphoreGiveFromISR(xSemaphore :  TSemaphoreHandle; pxHigherPriorityTaskWoken : pTBaseType) : TBaseType; inline;
 begin
 
 end;
@@ -845,7 +849,7 @@ begin
 
 end;
 
-function  xSemaphoreTakeFromISR(xSemaphore : TSemaphoreHandle; var pxHigherPriorityTaskWoken : TBaseType ) : TBaseType; inline;
+function  xSemaphoreTakeFromISR(xSemaphore : TSemaphoreHandle; pxHigherPriorityTaskWoken : pTBaseType ) : TBaseType; inline;
 begin
 
 end;
@@ -853,6 +857,14 @@ end;
 function  xSemaphoreTakeRecursive(xMutex : TSemaphoreHandle;xTicksToWait:TTickType) : TBaseType; inline;
 begin
 
+end;
+
+procedure taskYieldFromISR(pxHigherPriorityTaskWoken : pTBaseType); inline;
+var
+  portNVIC_INT_CTRL_REG : uint32 absolute $e000ed04;
+begin
+  if (pxHigherPriorityTaskWoken <> nil) and (pxHigherPriorityTaskWoken^ <> 0) then
+    portNVIC_INT_CTRL_REG := 1 shl 28;
 end;
 
 {$OPTIMIZATION DEFAULT}

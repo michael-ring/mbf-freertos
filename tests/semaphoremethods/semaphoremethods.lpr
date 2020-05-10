@@ -15,13 +15,18 @@ program semaphoremethods;
 
 {$INCLUDE MBF.Config.inc}
 uses
-  FreeRTOS;
+  FreeRTOS,FreeRTOS.heap_4;
 var
   SemaphoreHandle : TSemaphoreHandle;
   pxSemaphoreBuffer : pTStaticSemaphore;
   pxMutexBuffer : pTStaticSemaphore;
   xSemaphore : TSemaphoreHandle;
   xMutex : TSemaphoreHandle;
+  value : TUBaseType;
+  taskHandle : TTaskHandle;
+  status : TBaseType;
+  pxHigherPriorityTaskWoken : pTBaseType;
+  xTicksToWait : TTickType;
 begin
   vSemaphoreCreateBinary(SemaphoreHandle);
   SemaphoreHandle := xSemaphoreCreateBinary;
@@ -33,12 +38,12 @@ begin
   SemaphoreHandle := xSemaphoreCreateRecursiveMutex;
   SemaphoreHandle := xSemaphoreCreateRecursiveMutex(pxMutexBuffer);
   vSemaphoreDelete(xSemaphore);
-  function  uxSemaphoreGetCount(xSemaphore) : TUBaseType;
-  function  xSemaphoreGetMutexHolder(xMutex) : TTaskHandle;
-  function  xSemaphoreGive(xSemaphore :TSemaphoreHandle) : TBaseType;
-  function  xSemaphoreGiveFromISR(xSemaphore :  TSemaphoreHandle;pxHigherPriorityTaskWoken : pTBaseType) : TBaseType;
-  function  xSemaphoreGiveRecursive(xMutex : TSemaphoreHandle) : TBaseType;
-  function  xSemaphoreTake(xSemaphore : TSemaphoreHandle;xTicksToWait : TTickType) : TBaseType;
-  function  xSemaphoreTakeFromISR(xSemaphore : TSemaphoreHandle; pxHigherPriorityTaskWoken :  , pTBaseType ) : TBaseType;
-  function  xSemaphoreTakeRecursive(xMutex : TSemaphoreHandle;xTicksToWait:TTickType) : TBaseType;
+  value := uxSemaphoreGetCount(xSemaphore);
+  taskHandle := xSemaphoreGetMutexHolder(xMutex);
+  status := xSemaphoreGive(xSemaphore);
+  status := xSemaphoreGiveFromISR(xSemaphore,pxHigherPriorityTaskWoken);
+  status := xSemaphoreGiveRecursive(xMutex);
+  status := xSemaphoreTake(xSemaphore,xTicksToWait);
+  status := xSemaphoreTakeFromISR(xSemaphore,pxHigherPriorityTaskWoken);
+  status := xSemaphoreTakeRecursive(xMutex,xTicksToWait);
 end.

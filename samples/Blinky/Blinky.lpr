@@ -13,14 +13,18 @@ program Blinky;
   License for more details.
 }
 
-{ Demo program for GPIO functionalities. }
+{
+  This example uses dynamic Initialization of FreeRTOS, this means you need to include
+  freetos.heap_4 heapmanager that will do memory alllocation for FreeRTOS Objects
+}
 
 {$INCLUDE MBF.Config.inc}
 
 uses
   MBF.__CONTROLLERTYPE__.SystemCore,
   MBF.__CONTROLLERTYPE__.GPIO,
-  freertos;
+  freertos,
+  freertos.heap_4;
 
 procedure BlinkyTask({%H-}pvParameters:pointer);
 begin
@@ -43,19 +47,14 @@ begin
 
   GPIO.Initialize;
   GPIO.PinMode[TArduinoPin.D13] := TPinMode.Output;
-  //BlinkyTaskHandle := nil;
-  //if xTaskCreate(@BlinkyTask,'BlinkyTask',configMINIMAL_STACK_SIZE,nil,1,BlinkyTaskHandle) = pdPass then
-  //  vTaskStartScheduler;
-  while true do
-  begin
-    writeln('Blink an');
-    GPIO.PinValue[TArduinoPin.D13] := 1;
-    SystemCore.Delay(500);
-    writeln('Blink aus');
-    GPIO.PinValue[TArduinoPin.D13] := 0;
-    SystemCore.Delay(500);
-  end;
-
+  BlinkyTaskHandle := nil;
+  if xTaskCreate(@BlinkyTask,
+                 'BlinkyTask',
+                 configMINIMAL_STACK_SIZE,
+                 nil,
+                 tskIDLE_PRIORITY+1,
+                 BlinkyTaskHandle) = pdPass then
+    vTaskStartScheduler;
   repeat
   until 1=0;
 end.
