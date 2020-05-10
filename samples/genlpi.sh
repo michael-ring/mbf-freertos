@@ -19,58 +19,69 @@ rm -f $APPNAME/*.user
 
 cat devicelist | grep -v "^#" | while read BOARD_OR_CPU SUBARCH DEVICE DEVICESVD; do
   ARCH=
+  ARCHSVD=
   BINUTILS_PATH=
 
-  if [ "$SUBARCH" = ARMV6M ]; then
+  if [ "$SUBARCH" = armv6m ]; then
     ARCH=arm
     ARCHSVD=Cortex-M0.svd
   fi
 
-  if [ "$SUBARCH" = ARMV7M ]; then
+  if [ "$SUBARCH" = armv7m ]; then
     ARCH=arm
     ARCHSVD=Cortex-M3.svd
   fi
 
-  if [ "$SUBARCH" = ARMV7EM ]; then
+  if [ "$SUBARCH" = armv7em ]; then
     ARCH=arm
     ARCHSVD=Cortex-M4.svd
   fi
 
-  if [ "$SUBARCH" = MIPS32R2 ]; then
+  if [ "$SUBARCH" = lx6 ]; then
+    ARCH=xtensa
+  fi
+
+  if [ "$SUBARCH" = mips32r2 ]; then
     ARCH=mipsel
   fi
 
-  if [ "$SUBARCH" = RISCV32 ]; then
+  if [ "$SUBARCH" = riscv32 ]; then
     ARCH=riscv32
-    ARCHSVD=
   fi
 
-  if [ "$SUBARCH" = AVR5 ]; then
+  if [ "$SUBARCH" = avr5 ]; then
     ARCH=avr
   fi
 
   BINUTILS_PATH=$ARCH-embedded-
+  if [ "$SUBARCH" == "lx6" ]; then
+    BINUTILS_PATH=xtensa-esp32-elf-
+  fi
 
-  HEAPSIZE=8192
-  STACKSIZE=8192
-
-  cat templates/template.lpi | sed -e "s,%%APPNAME%%,$APPNAME,g" \
-                       -e "s,%%ARCH%%,$ARCH,g" \
-                       -e "s,%%SUBARCH%%,$SUBARCH,g" \
-                       -e "s,%%BINUTILS_PATH%%,$BINUTILS_PATH,g" \
-                       -e "s,%%HEAPSIZE%%,$HEAPSIZE,g" \
-                       -e "s,%%STACKSIZE%%,$STACKSIZE,g" \
-                       -e "s,%%EXTRACUSTOMOPTION1%%,$EXTRACUSTOMOPTION1,g" \
-                       -e "s,%%EXTRACUSTOMOPTION2%%,$EXTRACUSTOMOPTION2,g" \
-                       -e "s,%%EXTRACUSTOMOPTION3%%,$EXTRACUSTOMOPTION3,g" \
-                       -e "s,%%BOARD_OR_CPU%%,$BOARD_OR_CPU,g" >$APPNAME/$APPNAME-$BOARD_OR_CPU.lpi
-  echo $APPNAME/$APPNAME-$BOARD_OR_CPU.lpi created
-  if [ -n "$ARCHSVD" ]; then
-    cat templates/template.jdebug | sed -e "s,%%APPNAME%%,$APPNAME,g" \
-                                      -e "s,%%ARCHSVD%%,$ARCHSVD,g" \
-                                      -e "s,%%DEVICESVD%%,$DEVICESVD,g" \
-                                      -e "s,%%DEVICE%%,$DEVICE,g" >$APPNAME/$APPNAME-$BOARD_OR_CPU.jdebug
-    echo $APPNAME/$APPNAME-$BOARD_OR_CPU.jdebug created
+  DONOTGENERATE=
+  if [ -f $APPNAME/devicelist.ignore ]; then
+    grep "$BOARD_OR_CPU" $APPNAME/devicelist.ignore >/dev/null
+    if [ "$?" == "0" ]; then
+      DONOTGENERATE=yes
+    fi
+  fi
+  if [ -z "$DONOTGENERATE" ]; then
+    cat templates/template.lpi | sed -e "s,%%APPNAME%%,$APPNAME,g" \
+                         -e "s,%%ARCH%%,$ARCH,g" \
+                         -e "s,%%SUBARCH%%,$SUBARCH,g" \
+                         -e "s,%%BINUTILS_PATH%%,$BINUTILS_PATH,g" \
+                         -e "s,%%EXTRACUSTOMOPTION1%%,$EXTRACUSTOMOPTION1,g" \
+                         -e "s,%%EXTRACUSTOMOPTION2%%,$EXTRACUSTOMOPTION2,g" \
+                         -e "s,%%EXTRACUSTOMOPTION3%%,$EXTRACUSTOMOPTION3,g" \
+                         -e "s,%%BOARD_OR_CPU%%,$BOARD_OR_CPU,g" >$APPNAME/$APPNAME-$BOARD_OR_CPU.lpi
+    echo $APPNAME/$APPNAME-$BOARD_OR_CPU.lpi created
+    if [ -n "$ARCHSVD" ]; then
+      cat templates/template.jdebug | sed -e "s,%%APPNAME%%,$APPNAME,g" \
+                                        -e "s,%%ARCHSVD%%,$ARCHSVD,g" \
+                                        -e "s,%%DEVICESVD%%,$DEVICESVD,g" \
+                                        -e "s,%%DEVICE%%,$DEVICE,g" >$APPNAME/$APPNAME-$BOARD_OR_CPU.jdebug
+      echo $APPNAME/$APPNAME-$BOARD_OR_CPU.jdebug created
+    fi
   fi
 
   if [ ! -f $APPNAME/$APPNAME.lpr ]; then

@@ -1,14 +1,8 @@
 unit freertos.heap_4;
 {$if defined(CPUARM)}
-  {$if defined(CPUARMV6M)}
-    {$LINK libfreertos_heap_4_cortexm0p.a}
-  {$elseif defined(CPUARMV7M)}
-    {$LINK libfreertos_heap_4_cortexm3.a}
-  {$elseif defined(CPUARMV7EM)}
-    {$LINK libfreertos_heap_4_cortexm4f.a}
-  {$else}
-    {$Error  No FreeRTOS library available for this subarch}
-  {$endif}
+  {$LINKLIB freertos_heap_4,static}
+{$elseif defined(CPUXTENSA)}
+  {$LINKLIB freertos_heap_4,static}
 {$else}
   {$ERROR No FreeRTOS support currently available for current arch}
 {$endif}

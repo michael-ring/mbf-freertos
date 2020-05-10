@@ -43,7 +43,20 @@ lib/
 .idea
 
 lib/
+build/
 
 *.lpi
 fpcdebug.txt
 ppas.sh
+sdkconfig
+CMakeLists.txt
+Kconfig
+Kconfig.projbuild
+config.env
+esp32.project.ld
+esp32_out.ld
+gdbinit
+kconfigs.in
+kconfigs_projbuild.in
+ldgen_libraries
+sdkconfig.h

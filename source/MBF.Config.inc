@@ -54,6 +54,7 @@
 //{$STATIC ON}
 
 {$INCLUDE MBF.Boards.STM32F4.inc}
+{$INCLUDE MBF.Boards.ESP32.inc}
 
 {$IFNDEF __CONTROLLERTYPE__}
   {$ERROR Unfortunately MBF has not yet been ported to your Embedded Controller}

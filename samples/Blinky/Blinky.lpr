@@ -37,18 +37,24 @@ end;
 
 var
   BlinkyTaskHandle : TTaskHandle;
-  BlinkyTaskTCB : TStaticTask;
-  BlinkyTaskStack : array[0..configMINIMAL_STACK_SIZE-1] of TStackType;
 begin
   SystemCore.Initialize;
   SystemCore.SetCPUFrequency(SystemCore.getMaxCPUFrequency);
 
   GPIO.Initialize;
   GPIO.PinMode[TArduinoPin.D13] := TPinMode.Output;
-  //Create a Static Task, This way FreeRTOS does not need to allocate Memory
-  BlinkyTaskHandle := xTaskCreateStatic(@BlinkyTask,'BlinkyTask',configMINIMAL_STACK_SIZE,nil,1,@BlinkyTaskStack,@BlinkyTaskTCB);
-  if BlinkyTaskHandle <> nil then
-    vTaskStartScheduler;
+  //BlinkyTaskHandle := nil;
+  //if xTaskCreate(@BlinkyTask,'BlinkyTask',configMINIMAL_STACK_SIZE,nil,1,BlinkyTaskHandle) = pdPass then
+  //  vTaskStartScheduler;
+  while true do
+  begin
+    writeln('Blink an');
+    GPIO.PinValue[TArduinoPin.D13] := 1;
+    SystemCore.Delay(500);
+    writeln('Blink aus');
+    GPIO.PinValue[TArduinoPin.D13] := 0;
+    SystemCore.Delay(500);
+  end;
 
   repeat
   until 1=0;
