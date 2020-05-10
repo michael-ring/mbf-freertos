@@ -1,2 +1,5 @@
 #Boardname	SubArch		Chipname (JLink)	SVD File
+#nucleog071rb 	ARMV6M 		stm32g071rb		STM32G07X.svd
+#nucleof103rb 	ARMV7M 		stm32f103rb		STM32F103.svd
 nucleof401re 	ARMV7EM		stm32f401re		STM32F401.svd
+nodemcuesp32    lx6             esp32
