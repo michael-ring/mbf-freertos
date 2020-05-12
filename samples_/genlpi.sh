@@ -35,10 +35,12 @@ cat devicelist | grep -v "^#" | while read BOARD_OR_CPU SUBARCH DEVICE DEVICESVD
   if [ "$SUBARCH" = armv7em ]; then
     ARCH=arm
     ARCHSVD=Cortex-M4.svd
+    EXTRACUSTOMOPTION1="-Sg -CfFPV4_SP_D16"
   fi
 
   if [ "$SUBARCH" = lx6 ]; then
     ARCH=xtensa
+    EXTRACUSTOMOPTION1="-CfHARD"
   fi
 
   if [ "$SUBARCH" = mips32r2 ]; then
