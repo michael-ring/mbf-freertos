@@ -1,13 +1,19 @@
 #!/bin/sh
 FREERTOSDIR=FreeRTOS-Kernel/
 
-mkdir -p lib/armv6m   2>/dev/null
-mkdir -p lib/armv7m   2>/dev/null
-mkdir -p lib/armv7em  2>/dev/null
-rm -f lib/armv6m/*    2>/dev/null
-rm -f lib/armv7m/*    2>/dev/null
-rm -f lib/armv7em/*   2>/dev/null
-rm -f lib/libfreertos* 2>/dev/null
+mkdir -p lib/armv6m      2>/dev/null
+mkdir -p lib/armv7m      2>/dev/null
+mkdir -p lib/armv7em     2>/dev/null
+rm -f lib/armv6m/*.o     2>/dev/null
+rm -f lib/armv6m/*.d     2>/dev/null
+rm -f lib/armv6m/*.su    2>/dev/null
+rm -f lib/armv7m/*.o     2>/dev/null
+rm -f lib/armv7m/*.d     2>/dev/null
+rm -f lib/armv7m/*.su    2>/dev/null
+rm -f lib/armv7em/*.o    2>/dev/null
+rm -f lib/armv7em/*.d    2>/dev/null
+rm -f lib/armv7em/*.su   2>/dev/null
+rm -f lib/libfreertos*.a 2>/dev/null
 
 echo "Compiling FreeRTOS for armv6m"
 cp samples/templates/FreeRTOSConfig.h.armv6m FreeRTOSConfig.h
