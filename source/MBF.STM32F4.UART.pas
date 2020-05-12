@@ -208,6 +208,96 @@ implementation
 uses
   MBF.BitHelpers;
 
+{$if defined(HAS_USART1)}
+procedure USART1_IRQHandler; interrupt; public name 'USART1_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_USART2)}
+procedure USART2_IRQHandler; interrupt; public name 'USART2_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_USART3)}
+procedure USART3_IRQHandler; interrupt; public name 'USART3_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_UART4)}
+procedure UART4_IRQHandler; interrupt; public name 'UART4_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_UART5)}
+procedure UART5_IRQHandler; interrupt; public name 'UART5_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_USART6)}
+procedure USART6_IRQHandler; interrupt; public name 'USART6_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_UART7)}
+procedure UART7_IRQHandler; interrupt; public name 'UART7_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_UART8)}
+procedure UART8_IRQHandler; interrupt; public name 'UART8_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_UART9)}
+procedure UART9_IRQHandler; interrupt; public name 'UART9_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
+{$if defined(HAS_UART10)}
+procedure UART10_IRQHandler; interrupt; public name 'UART10_IRQHandler';
+begin
+  asm
+    bkpt
+  end;
+end;
+{$endif}
+
 function TUARTRegistersHelper.getClockSource : TUARTClockSource;
 begin
   //No choice on STM32F401 family
