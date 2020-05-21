@@ -53,6 +53,7 @@
 
 //{$STATIC ON}
 
+{$INCLUDE MBF.Boards.STM32G0.inc}
 {$INCLUDE MBF.Boards.STM32F4.inc}
 {$INCLUDE MBF.Boards.ESP32.inc}
 

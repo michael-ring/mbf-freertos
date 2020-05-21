@@ -118,7 +118,9 @@ end;
 
 procedure TSystemCore.RegUnlock;
 begin
-
+  //We need to put Register Locking into a Critical Section so that the unlock timing does not get screwed up
+  EnterCriticalSection;
+  ExitCriticalSection;
 end;
 
 procedure TSystemCore.Reglock;
