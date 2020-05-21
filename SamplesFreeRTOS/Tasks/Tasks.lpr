@@ -1,4 +1,4 @@
-program Queues;
+program Tasks;
 {
   This file is part of Pascal Microcontroller Board Framework (MBF)
   Copyright (c) 2015 -  Michael Ring
@@ -22,41 +22,23 @@ uses
   freertos.heap_4,
   SeggerRTT;
 
-var
-  Queue1Handle : TQueueHandle = nil;
-
 procedure Task1({%H-}pvParameters:pointer);
-var
-  ByteToSend : byte;
-  i : integer;
 begin
-  ByteToSend := 32;
-  SEGGER_RTT_WriteString(0,'Task 1 running'#13#10);
-  SEGGER_RTT_WriteString(0,'Filling up Queue'#13#10);
-  for i := 1 to 10 do
-    xQueueSend(Queue1Handle,@ByteToSend,10);
-  SEGGER_RTT_WriteString(0,'Now trying to write to full queue'#13#10);
-  for i := 1 to 10 do
+  while true do
   begin
-    SEGGER_RTT_WriteString(0,'Writing char to queue'#13#10);
-    xQueueSend(Queue1Handle,@ByteToSend,2000);
+    SEGGER_RTT_WriteString(0,'Task 1 running'#13#10);
+    SystemCore.Delay(5000);
   end;
-  SEGGER_RTT_WriteString(0,'Work done, deleting task'#13#10);
+  //In case we ever break out the while loop the task must end itself
   vTaskDelete(nil);
 end;
 
 procedure Task2({%H-}pvParameters:pointer);
-var
-  ByteToReceive : byte;
 begin
   while true do
   begin
     SEGGER_RTT_WriteString(0,'Task 2 running'#13#10);
-    SEGGER_RTT_WriteString(0,'Task 2 sleeping for a second'#13#10);
-    SystemCore.Delay(1000);
-    while xQueueReceive(Queue1Handle,@ByteToReceive,1000)=pdTrue do
-      SEGGER_RTT_WriteString(0,'Successfully received char'#13#10);
-    SEGGER_RTT_WriteString(0,'Receive Queue timed out'#13#10);
+    SystemCore.Delay(5000);
   end;
   //In case we ever break out the while loop the task must end itself
   vTaskDelete(nil);
@@ -83,10 +65,8 @@ begin
               nil,
               tskIDLE_PRIORITY+1,
               Task2Handle);
-  Queue1Handle := xQueueCreate(10,sizeof(byte));
 
-  if (Task1Handle <> nil) and (Task2Handle <> nil) and
-     (Queue1Handle <> nil) then
+  if (Task1Handle <> nil) and (Task2Handle <> nil) then
   begin
     vTaskStartScheduler;
   end;
