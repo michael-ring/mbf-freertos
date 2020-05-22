@@ -85,13 +85,7 @@ type
   end;
   pTStaticList = ^TStaticList;
 
-  TMemoryRegion = record
-    pvBaseAddress : pointer;
-    ulLengthInBytes : uint32;
-    ulParameters : uint32;
-  end;
-
-    TListItem = record
+  TListItem = record
     xItemValue : TTickType;
     pxNext : ^TListItem;
     pxPrevious : ^TListItem;
@@ -110,6 +104,7 @@ type
     xListEnd : TMiniListItem;
   end;
 
+  TTaskFunction = procedure(_para1:pointer);
 
 
 

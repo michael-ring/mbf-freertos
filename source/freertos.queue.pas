@@ -33,82 +33,82 @@ type
     ucDummy9 : uint8;
     {$endif}
   end;
-
   pTStaticQueue = ^TStaticQueue;
 
   TQueueDefinition = record
   end;
-
   TQueueHandle = ^TQueueDefinition;
   TQueueSetHandle = ^TQueueDefinition;
   TQueueSetMemberHandle = ^TQueueDefinition;
 
 
-{$if (configSUPPORT_DYNAMIC_ALLOCATION = 1)}
-function xQueueCreate(const uxQueueLength : TUBaseType; uxItemSize : TUBaseType) : TQueueHandle; inline;
-{$endif}
-{$if (configSUPPORT_STATIC_ALLOCATION = 1)}
-function xQueueCreateStatic(uxQueueLength : TUBaseType; uxItemSize : TUBaseType; pucQueueStorage : pointer; var pxStaticQueue : TStaticQueue) : TQueueHandle;
-{$endif}
-function  xQueueSendToFront(xQueue : TQueueHandle; pvItemToQueue : pointer; xTicksToWait : TTickType) : TBaseType;
-function  xQueueSendToBack(xQueue : TQueueHandle; pvItemToQueue : pointer; xTicksToWait : TTickType) : TBaseType; inline;
-function  xQueueSend(xQueue : TQueueHandle; pvItemToQueue : pointer; xTicksToWait : TTickType) : TBaseType;
-function  xQueueOverwrite(xQueue : TQueueHandle; pvItemToQueue : pointer) : TBaseType; inline;
-function  xQueueGenericSend(xQueue : TQueueHandle; pvItemToQueue : pointer; xTicksToWait : TTickType; xCopyPosition : TBaseType) : TBaseType; external;
-function  xQueuePeek(xQueue:TQueueHandle; pvBuffer:pointer; xTicksToWait:TTickType):TBaseType;external;
-function  xQueuePeekFromISR(xQueue:TQueueHandle; pvBuffer:pointer):TBaseType;external;
-function  xQueueReceive(xQueue:TQueueHandle; pvBuffer:pointer; xTicksToWait:TTickType):TBaseType;external;
-function  uxQueueMessagesWaiting(xQueue:TQueueHandle):TUBaseType;external;
-function  uxQueueSpacesAvailable(xQueue:TQueueHandle):TUBaseType;external;
-procedure vQueueDelete(xQueue:TQueueHandle);external;
-function  xQueueSendToFrontFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer; pxHigherPriorityTaskWoken:pTBaseType) : TBaseType;
-function  xQueueSendToBackFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer; pxHigherPriorityTaskWoken:pTBaseType) : TBaseType;
-function  xQueueOverwriteFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer; pxHigherPriorityTaskWoken:pTBaseType) : TBaseType;
-function  xQueueSendFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer;pxHigherPriorityTaskWoken:pTBaseType) : TBaseType;
-function  xQueueGenericSendFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer; pxHigherPriorityTaskWoken:pTBaseType; xCopyPosition : TBaseType) : TBaseType; external;
-function  xQueueGiveFromISR(xQueue:TQueueHandle; pxHigherPriorityTaskWoken:pTBaseType):TBaseType;external;
-function  xQueueReceiveFromISR(xQueue:TQueueHandle; pvBuffer:pointer; pxHigherPriorityTaskWoken:pTBaseType):TBaseType;external;
-function  xQueueIsQueueEmptyFromISR(xQueue:TQueueHandle):TBaseType;external;
-function  xQueueIsQueueFullFromISR(xQueue:TQueueHandle):TBaseType;external;
-function  uxQueueMessagesWaitingFromISR(xQueue:TQueueHandle):TUBaseType;external;
-function  xQueueCRSendFromISR(xQueue:TQueueHandle; pvItemToQueue:pointer; xCoRoutinePreviouslyWoken:TBaseType):TBaseType;external;
-function  xQueueCRReceiveFromISR(xQueue:TQueueHandle; pvBuffer:pointer; var pxTaskWoken:TBaseType):TBaseType;external;
-function  xQueueCRSend(xQueue:TQueueHandle; pvItemToQueue:pointer; xTicksToWait:TTickType):TBaseType;external;
-function  xQueueCRReceive(xQueue:TQueueHandle; pvBuffer:pointer; xTicksToWait:TTickType):TBaseType;external;
-function  xQueueCreateMutex(ucQueueType:uint8):TQueueHandle;external;
-function  xQueueCreateMutexStatic(ucQueueType:uint8; var pxStaticQueue:TStaticQueue):TQueueHandle;external;
-function  xQueueCreateCountingSemaphore(uxMaxCount:TUBaseType; uxInitialCount:TUBaseType):TQueueHandle;external;
-function  xQueueCreateCountingSemaphoreStatic(uxMaxCount:TUBaseType; uxInitialCount:TUBaseType; var pxStaticQueue:TStaticQueue):TQueueHandle;external;
-function  xQueueSemaphoreTake(xQueue:TQueueHandle; xTicksToWait:TTickType):TBaseType;external;
-function  xQueueGetMutexHolder(xSemaphore:TQueueHandle):TTaskHandle;external;
-function  xQueueGetMutexHolderFromISR(xSemaphore:TQueueHandle):TTaskHandle;external;
-function  xQueueTakeMutexRecursive(xMutex:TQueueHandle; xTicksToWait:TTickType):TBaseType;external;
-function  xQueueGiveMutexRecursive(xMutex:TQueueHandle):TBaseType;external;
-function  xQueueReset(xQueue:TQueueHandle) : TBaseType;
-function  xQueueGenericReset(xQueue:TQueueHandle;xNewQueue:TBaseType) : TBaseType; external;
-{$if (configQUEUE_REGISTRY_SIZE > 0)}
-procedure vQueueAddToRegistry(xQueue:TQueueHandle; pcQueueName:pChar);external;
-procedure vQueueUnregisterQueue(xQueue:TQueueHandle);external;
-function  pcQueueGetName(xQueue:TQueueHandle):pChar;external;
-{$endif}
-{$if (configSUPPORT_DYNAMIC_ALLOCATION = 1)}
-function  xQueueGenericCreate(uxQueueLength:TUBaseType; uxItemSize:TUBaseType; ucQueueType:uint8):TQueueHandle;external;
-{$endif}
-{$if (configSUPPORT_STATIC_ALLOCATION = 1)}
-  function  xQueueGenericCreateStatic(uxQueueLength:TUBaseType; uxItemSize:TUBaseType; pucQueueStorage:pByte; var pxStaticQueue:TStaticQueue; ucQueueType:uint8):TQueueHandle;external;
-{$endif}
-function  xQueueCreateSet(uxEventQueueLength:TUBaseType):TQueueSetHandle;external;
-function  xQueueAddToSet(xQueueOrSemaphore:TQueueSetMemberHandle; xQueueSet:TQueueSetHandle):TBaseType;external;
-function  xQueueRemoveFromSet(xQueueOrSemaphore:TQueueSetMemberHandle; xQueueSet:TQueueSetHandle):TBaseType;external;
-function  xQueueSelectFromSet(xQueueSet:TQueueSetHandle; xTicksToWait:TTickType):TQueueSetMemberHandle;external;
-function  xQueueSelectFromSetFromISR(xQueueSet:TQueueSetHandle):TQueueSetMemberHandle;external;
+  {$if (configSUPPORT_DYNAMIC_ALLOCATION = 1)}
+    function  xQueueGenericCreate(uxQueueLength:TUBaseType; uxItemSize:TUBaseType; ucQueueType:uint8):TQueueHandle;external;
+    function  xQueueCreate(const uxQueueLength : TUBaseType; uxItemSize : TUBaseType) : TQueueHandle; inline;
+    function  xQueueCreateMutex(ucQueueType:uint8):TQueueHandle;external;
+    function  xQueueCreateCountingSemaphore(uxMaxCount:TUBaseType; uxInitialCount:TUBaseType):TQueueHandle;external;
+  {$endif}
 
-//procedure vQueueWaitForMessageRestricted(xQueue:TQueueHandle; xTicksToWait:TTickType; xWaitIndefinitely:TBaseType);external;
-//function  xQueueGenericReset(xQueue:TQueueHandle; xNewQueue:TBaseType):TBaseType;external;
-//procedure vQueueSetQueueNumber(xQueue:TQueueHandle; uxQueueNumber:TUBaseType);external;
-//function  uxQueueGetQueueNumber(xQueue:TQueueHandle):TUBaseType;external;
-//function  ucQueueGetQueueType(xQueue:TQueueHandle):uint8;external;
+  {$if (configSUPPORT_STATIC_ALLOCATION = 1)}
+    function  xQueueGenericCreateStatic(uxQueueLength:TUBaseType; uxItemSize:TUBaseType; pucQueueStorage:pByte; var pxStaticQueue:TStaticQueue; ucQueueType:uint8):TQueueHandle;external;
+    function  xQueueCreateStatic(uxQueueLength : TUBaseType; uxItemSize : TUBaseType; pucQueueStorage : pointer; var pxStaticQueue : TStaticQueue) : TQueueHandle;
+    function  xQueueCreateMutexStatic(ucQueueType:uint8; var pxStaticQueue:TStaticQueue):TQueueHandle;external;
+    function  xQueueCreateCountingSemaphoreStatic(uxMaxCount:TUBaseType; uxInitialCount:TUBaseType; var pxStaticQueue:TStaticQueue):TQueueHandle;external;
+  {$endif}
 
+  function  xQueueSendToFront(xQueue : TQueueHandle; pvItemToQueue : pointer; xTicksToWait : TTickType) : TBaseType;
+  function  xQueueSendToBack(xQueue : TQueueHandle; pvItemToQueue : pointer; xTicksToWait : TTickType) : TBaseType; inline;
+  function  xQueueSend(xQueue : TQueueHandle; pvItemToQueue : pointer; xTicksToWait : TTickType) : TBaseType;
+  function  xQueueOverwrite(xQueue : TQueueHandle; pvItemToQueue : pointer) : TBaseType; inline;
+  function  xQueueGenericSend(xQueue : TQueueHandle; pvItemToQueue : pointer; xTicksToWait : TTickType; xCopyPosition : TBaseType) : TBaseType; external;
+  function  xQueuePeek(xQueue:TQueueHandle; pvBuffer:pointer; xTicksToWait:TTickType):TBaseType;external;
+  function  xQueuePeekFromISR(xQueue:TQueueHandle; pvBuffer:pointer):TBaseType;external;
+  function  xQueueReceive(xQueue:TQueueHandle; pvBuffer:pointer; xTicksToWait:TTickType):TBaseType;external;
+  function  uxQueueMessagesWaiting(xQueue:TQueueHandle):TUBaseType;external;
+  function  uxQueueSpacesAvailable(xQueue:TQueueHandle):TUBaseType;external;
+  procedure vQueueDelete(xQueue:TQueueHandle);external;
+  function  xQueueSendToFrontFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer; pxHigherPriorityTaskWoken:pTBaseType) : TBaseType;
+  function  xQueueSendToBackFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer; pxHigherPriorityTaskWoken:pTBaseType) : TBaseType;
+  function  xQueueOverwriteFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer; pxHigherPriorityTaskWoken:pTBaseType) : TBaseType;
+  function  xQueueSendFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer;pxHigherPriorityTaskWoken:pTBaseType) : TBaseType;
+  function  xQueueGenericSendFromISR(xQueue : TQueueHandle; pvItemToQueue : pointer; pxHigherPriorityTaskWoken:pTBaseType; xCopyPosition : TBaseType) : TBaseType; external;
+  function  xQueueGiveFromISR(xQueue:TQueueHandle; pxHigherPriorityTaskWoken:pTBaseType):TBaseType;external; 
+  function  xQueueReceiveFromISR(xQueue:TQueueHandle; pvBuffer:pointer; pxHigherPriorityTaskWoken:pTBaseType):TBaseType;external;
+  function  xQueueIsQueueEmptyFromISR(xQueue:TQueueHandle):TBaseType;external;
+  function  xQueueIsQueueFullFromISR(xQueue:TQueueHandle):TBaseType;external;
+  function  uxQueueMessagesWaitingFromISR(xQueue:TQueueHandle):TUBaseType;external;
+  //function  xQueueCRSendFromISR(xQueue:TQueueHandle; pvItemToQueue:pointer; xCoRoutinePreviouslyWoken:TBaseType):TBaseType;external;
+  //function  xQueueCRReceiveFromISR(xQueue:TQueueHandle; pvBuffer:pointer; var pxTaskWoken:TBaseType):TBaseType;external;
+  //function  xQueueCRSend(xQueue:TQueueHandle; pvItemToQueue:pointer; xTicksToWait:TTickType):TBaseType;external;
+  //function  xQueueCRReceive(xQueue:TQueueHandle; pvBuffer:pointer; xTicksToWait:TTickType):TBaseType;external;
+
+  function  xQueueSemaphoreTake(xQueue:TQueueHandle; xTicksToWait:TTickType):TBaseType;external;
+  function  xQueueGetMutexHolder(xSemaphore:TQueueHandle):TTaskHandle;external;
+  function  xQueueGetMutexHolderFromISR(xSemaphore:TQueueHandle):TTaskHandle;external;
+
+  function  xQueueTakeMutexRecursive(xMutex:TQueueHandle; xTicksToWait:TTickType):TBaseType;external;
+  function  xQueueGiveMutexRecursive(xMutex:TQueueHandle):TBaseType;external;
+
+  function  xQueueReset(xQueue:TQueueHandle) : TBaseType;
+  function  xQueueGenericReset(xQueue:TQueueHandle;xNewQueue:TBaseType) : TBaseType; external;
+
+  {$if (configQUEUE_REGISTRY_SIZE > 0)}
+    procedure vQueueAddToRegistry(xQueue:TQueueHandle; pcQueueName:pChar);external;
+    procedure vQueueUnregisterQueue(xQueue:TQueueHandle);external;
+    function  pcQueueGetName(xQueue:TQueueHandle):pChar;external;
+  {$endif}
+  
+  function  xQueueCreateSet(uxEventQueueLength:TUBaseType):TQueueSetHandle;external;
+  function  xQueueAddToSet(xQueueOrSemaphore:TQueueSetMemberHandle; xQueueSet:TQueueSetHandle):TBaseType;external;
+  function  xQueueRemoveFromSet(xQueueOrSemaphore:TQueueSetMemberHandle; xQueueSet:TQueueSetHandle):TBaseType;external;
+  function  xQueueSelectFromSet(xQueueSet:TQueueSetHandle; xTicksToWait:TTickType):TQueueSetMemberHandle;external;
+  function  xQueueSelectFromSetFromISR(xQueueSet:TQueueSetHandle):TQueueSetMemberHandle;external;
+
+  //procedure vQueueWaitForMessageRestricted(xQueue:TQueueHandle; xTicksToWait:TTickType; xWaitIndefinitely:TBaseType);external;
+  //function  xQueueGenericReset(xQueue:TQueueHandle; xNewQueue:TBaseType):TBaseType;external;
+  //procedure vQueueSetQueueNumber(xQueue:TQueueHandle; uxQueueNumber:TUBaseType);external;
+  //function  uxQueueGetQueueNumber(xQueue:TQueueHandle):TUBaseType;external;
+  //function  ucQueueGetQueueType(xQueue:TQueueHandle):uint8;external;
 {$endif}
 
 {$if not defined(INTERFACE) and not defined(IMPLEMENTATION)}
@@ -116,20 +116,17 @@ function  xQueueSelectFromSetFromISR(xQueueSet:TQueueSetHandle):TQueueSetMemberH
 {$endif}
 
 {$if not defined(INTERFACE)}
-const
-  // For internal use only. */
-  queueSEND_TO_BACK  = 0;
-  queueSEND_TO_FRONT = 1;
-  queueOVERWRITE     = 2;
+  const
+    queueSEND_TO_BACK  = 0;
+    queueSEND_TO_FRONT = 1;
+    queueOVERWRITE     = 2;
 
-const
-  // For internal use only.  These definitions *must* match those in queue.c. */
-  queueQUEUE_TYPE_BASE               = 0;
-  queueQUEUE_TYPE_SET                = 0;
-  queueQUEUE_TYPE_MUTEX              = 1;
-  queueQUEUE_TYPE_COUNTING_SEMAPHORE = 2;
-  queueQUEUE_TYPE_BINARY_SEMAPHORE   = 3;
-  queueQUEUE_TYPE_RECURSIVE_MUTEX    = 4;
+    queueQUEUE_TYPE_BASE               = 0;
+    queueQUEUE_TYPE_SET                = 0;
+    queueQUEUE_TYPE_MUTEX              = 1;
+    queueQUEUE_TYPE_COUNTING_SEMAPHORE = 2;
+    queueQUEUE_TYPE_BINARY_SEMAPHORE   = 3;
+    queueQUEUE_TYPE_RECURSIVE_MUTEX    = 4;
 
   function xQueueCreate(const uxQueueLength : TUBaseType; uxItemSize : TUBaseType) : TQueueHandle; inline;
   begin
@@ -185,7 +182,6 @@ const
   begin
     Result := xQueueGenericReset(xQueue,pdFalse);
   end;
-
 {$endif}
 
 {$if not defined(INTERFACE) and not defined(IMPLEMENTATION)}

@@ -9,41 +9,43 @@
 {$endif}
 
 {$if not defined(IMPLEMENTATION)}
-const
-  semBINARY_SEMAPHORE_QUEUE_LENGTH = 1;
-  semSEMAPHORE_QUEUE_ITEM_LENGTH   = 0;
-  semGIVE_BLOCK_TIME               = 0;
+  const
+    semBINARY_SEMAPHORE_QUEUE_LENGTH = 1;
+    semSEMAPHORE_QUEUE_ITEM_LENGTH   = 0;
+    semGIVE_BLOCK_TIME               = 0;
 
-type
-  TStaticSemaphore = TStaticQueue;
+  type
+    TStaticSemaphore = TStaticQueue;
 
-  pTStaticSemaphore = ^TStaticSemaphore;
+    pTStaticSemaphore = ^TStaticSemaphore;
 
-  TSemaphoreHandle =TQueueHandle ;
+    TSemaphoreHandle =TQueueHandle;
 
-{$if (configSUPPORT_DYNAMIC_ALLOCATION = 1)}
-procedure vSemaphoreCreateBinary(xSemaphore : TSemaphoreHandle);
-{$endif}
+  {$if (configSUPPORT_DYNAMIC_ALLOCATION = 1)}
+    procedure vSemaphoreCreateBinary(xSemaphore : TSemaphoreHandle);
+    function  xSemaphoreCreateBinary : TSemaphoreHandle;
+    function  xSemaphoreCreateCounting(uxMaxCount :  TUBaseType; uxInitialCount : TUBaseType) : TSemaphoreHandle; external name 'xQueueCreateCountingSemaphore';
+    function  xSemaphoreCreateMutex : TSemaphoreHandle;
+    function  xSemaphoreCreateRecursiveMutex : TSemaphoreHandle;
+  {$endif}
 
-function  xSemaphoreCreateBinary : TSemaphoreHandle;
-function  xSemaphoreCreateBinaryStatic(var pxSemaphoreBuffer : TStaticSemaphore) : TSemaphoreHandle;
-function  xSemaphoreCreateCounting(uxMaxCount :  TUBaseType; uxInitialCount : TUBaseType) : TSemaphoreHandle; external name 'xQueueCreateCountingSemaphore';
-function  xSemaphoreCreateCountingStatic(uxMaxCount : TUBaseType;uxInitialCount : TUBaseType;pxSempahoreBuffer : pTStaticSemaphore) : TSemaphoreHandle; external name 'xQueueCreateCountingSemaphoreStatic';
-function  xSemaphoreCreateMutex : TSemaphoreHandle;
-function  xSemaphoreCreateMutexStatic( var pxMutexBuffer : TStaticSemaphore) : TSemaphoreHandle;
-function  xSemaphoreCreateRecursiveMutex : TSemaphoreHandle;
-function  xSemaphoreCreateRecursiveMutexStatic(var pxMutexBuffer : TStaticSemaphore) : TSemaphoreHandle;
-procedure vSemaphoreDelete(xSemaphore : TSemaphoreHandle); external name 'vQueueDelete';
-function  uxSemaphoreGetCount(xSemaphore : TSemaphoreHandle) : TUBaseType; external name 'uxQueueMessagesWaiting';
-function  xSemaphoreGetMutexHolder(xMutex : TSemaphoreHandle) : TTaskHandle; external name 'xQueueGetMutexHolder';
-function  xSemaphoreGetMutexHolderFromISR(xMutex : TSemaphoreHandle) : TTaskHandle; external name 'xQueueGetMutexHolderFromISR';
-function  xSemaphoreGive(xSemaphore :TSemaphoreHandle) : TBaseType;
-function  xSemaphoreGiveFromISR(xSemaphore :  TSemaphoreHandle;pxHigherPriorityTaskWoken : pTBaseType) : TBaseType; external name 'xQueueGiveFromISR';
-function  xSemaphoreGiveRecursive(xMutex : TSemaphoreHandle) : TBaseType; external name 'xQueueGiveMutexRecursive';
-function  xSemaphoreTake(xSemaphore : TSemaphoreHandle;xTicksToWait : TTickType) : TBaseType; external name 'xQueueSemaphoreTake';
-function  xSemaphoreTakeFromISR(xSemaphore : TSemaphoreHandle; pxHigherPriorityTaskWoken : pTBaseType ) : TBaseType;
-function  xSemaphoreTakeRecursive(xMutex : TSemaphoreHandle;xTicksToWait:TTickType) : TBaseType; external name 'xQueueTakeMutexRecursive';
+  {$if (configSUPPORT_DYNAMIC_ALLOCATION = 1)}
+    function  xSemaphoreCreateBinaryStatic(var pxSemaphoreBuffer : TStaticSemaphore) : TSemaphoreHandle;
+    function  xSemaphoreCreateCountingStatic(uxMaxCount : TUBaseType;uxInitialCount : TUBaseType;pxSempahoreBuffer : pTStaticSemaphore) : TSemaphoreHandle; external name 'xQueueCreateCountingSemaphoreStatic';
+    function  xSemaphoreCreateMutexStatic( var pxMutexBuffer : TStaticSemaphore) : TSemaphoreHandle;
+    function  xSemaphoreCreateRecursiveMutexStatic(var pxMutexBuffer : TStaticSemaphore) : TSemaphoreHandle;
+  {$endif}
 
+  function  xSemaphoreTake(xSemaphore : TSemaphoreHandle;xTicksToWait : TTickType) : TBaseType; external name 'xQueueSemaphoreTake';
+  function  xSemaphoreTakeRecursive(xMutex : TSemaphoreHandle;xTicksToWait:TTickType) : TBaseType; external name 'xQueueTakeMutexRecursive';
+  function  xSemaphoreGive(xSemaphore :TSemaphoreHandle) : TBaseType;
+  function  xSemaphoreGiveRecursive(xMutex : TSemaphoreHandle) : TBaseType; external name 'xQueueGiveMutexRecursive'; 
+  function  xSemaphoreGiveFromISR(xSemaphore :  TSemaphoreHandle;pxHigherPriorityTaskWoken : pTBaseType) : TBaseType; external name 'xQueueGiveFromISR';
+  function  xSemaphoreTakeFromISR(xSemaphore : TSemaphoreHandle; pxHigherPriorityTaskWoken : pTBaseType ) : TBaseType;
+  procedure vSemaphoreDelete(xSemaphore : TSemaphoreHandle); external name 'vQueueDelete';
+  function  xSemaphoreGetMutexHolder(xMutex : TSemaphoreHandle) : TTaskHandle; external name 'xQueueGetMutexHolder';
+  function  xSemaphoreGetMutexHolderFromISR(xMutex : TSemaphoreHandle) : TTaskHandle; external name 'xQueueGetMutexHolderFromISR';
+  function  uxSemaphoreGetCount(xSemaphore : TSemaphoreHandle) : TUBaseType; external name 'uxQueueMessagesWaiting';
 {$endif}
 
 {$if not defined(INTERFACE) and not defined(IMPLEMENTATION)}

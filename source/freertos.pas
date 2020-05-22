@@ -9,13 +9,14 @@ interface
 {$INCLUDE freertos.Timer.pas}
 {$INCLUDE freertos.Semaphore.pas}
 {$INCLUDE freertos.StreamBuffer.pas}
+{$INCLUDE freertos.MessageBuffer.pas}
 {$undef INTERFACE}
 
 {$if defined(CPUARM)}
 function memset(pxBuffer:pointer; value : uint32; count : Tsize):pointer; public name 'memset';
 function memcpy(pxTarget : pointer; pxSource : pointer; count : Tsize):pointer; public name 'memcpy';
-procedure vApplicationGetIdleTaskMemory(var ppxIdleTaskTCBBuffer:pTStaticTask; var ppxIdleTaskStackBuffer:pTStackType; var pulIdleTaskStackSize:uint32); public name 'vApplicationGetIdleTaskMemory';
-procedure vApplicationGetTimerTaskMemory(var ppxTimerTaskTCBBuffer:pTStaticTask; var ppxTimerTaskStackBuffer:pTStackType; var pulTimerTaskStackSize:uint32); public name 'vApplicationGetTimerTaskMemory';
+procedure vApplicationGetIdleTaskMemory(var ppxIdleTaskTCBBuffer:pTStaticTaskTCB; var ppxIdleTaskStackBuffer:pTStackType; var pulIdleTaskStackSize:uint32); public name 'vApplicationGetIdleTaskMemory';
+procedure vApplicationGetTimerTaskMemory(var ppxTimerTaskTCBBuffer:pTStaticTaskTCB; var ppxTimerTaskStackBuffer:pTStackType; var pulTimerTaskStackSize:uint32); public name 'vApplicationGetTimerTaskMemory';
 {$endif}
 {$if defined(CPUARMV6M)}
 function  __aeabi_uidiv(const numerator : uint32; denominator : uint32):uint32; public name '__aeabi_uidiv';
@@ -29,6 +30,7 @@ implementation
 {$INCLUDE freertos.Timer.pas}
 {$INCLUDE freertos.Semaphore.pas}
 {$INCLUDE freertos.StreamBuffer.pas}
+{$INCLUDE freertos.MessageBuffer.pas}
 {$undef IMPLEMENTATION}
 
 {$if defined(CPUARM)}
@@ -44,14 +46,14 @@ begin
   Result := pxTarget;
 end;
 
-procedure vApplicationGetIdleTaskMemory(var ppxIdleTaskTCBBuffer:pTStaticTask; var ppxIdleTaskStackBuffer:pTStackType; var pulIdleTaskStackSize:uint32);
+procedure vApplicationGetIdleTaskMemory(var ppxIdleTaskTCBBuffer:pTStaticTaskTCB; var ppxIdleTaskStackBuffer:pTStackType; var pulIdleTaskStackSize:uint32);
 begin
   ppxIdleTaskTCBBuffer := @xIdleTaskTCB;
   ppxIdleTaskStackBuffer := @uxIdleTaskStack;
   pulIdleTaskStackSize := configMINIMAL_STACK_SIZE;
 end;
 
-procedure vApplicationGetTimerTaskMemory(var ppxTimerTaskTCBBuffer:pTStaticTask; var ppxTimerTaskStackBuffer:pTStackType; var pulTimerTaskStackSize:uint32);
+procedure vApplicationGetTimerTaskMemory(var ppxTimerTaskTCBBuffer:pTStaticTaskTCB; var ppxTimerTaskStackBuffer:pTStackType; var pulTimerTaskStackSize:uint32);
 begin
   ppxTimerTaskTCBBuffer := @xTimerTaskTCB;
   ppxTimerTaskStackBuffer := @uxTimerTaskStack;
