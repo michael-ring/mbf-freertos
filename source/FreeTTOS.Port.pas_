@@ -3,6 +3,11 @@
   unit freertos.port;
   {$mode objfpc}{$H+}
   interface
+  {$if defined(USE_SYSVIEW)}
+    uses
+      Segger.SysView;
+  {$endif}
+
   {$I FreeRTOS.config.inc}
 {$endif}
 
@@ -98,9 +103,17 @@
       portNVIC_INT_CTRL_REG : uint32 absolute $e000ed04;
     begin
       if (xSwitchRequired <> 0) then
+      {$if defined(USE_SYSVIEW)}
+        begin
+          traceISR_EXIT_TO_SCHEDULER();
+          portNVIC_INT_CTRL_REG := 1 shl 28;
+        end
+        else
+          traceISR_EXIT();
+      {$else}
         portNVIC_INT_CTRL_REG := 1 shl 28;
+      {$endif}
     end;
-
 
     procedure vPortFree; external name 'vPortFree';
 
