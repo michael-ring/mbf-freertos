@@ -1,4 +1,4 @@
-unit mbf.esp32.gpio;
+unit MBF.ESP32.GPIO;
 {
   This file is part of Pascal Microcontroller Board Framework (MBF)
   Copyright (c) 2015 -  Michael Ring

@@ -1,4 +1,4 @@
-unit mbf.stm32g0.systemcore;
+unit MBF.STM32G0.SystemCore;
 {
   This file is part of Pascal Microcontroller Board Framework (MBF)
   Copyright (c) 2015 -  Michael Ring
@@ -34,7 +34,7 @@ interface
 const
   MaxCPUFrequency=64000000;
 {$else}
-  {$error Unknown Chip, please check mbf.boards.stm32g0.inc and then define maximum CPU Frequency here}
+  {$error Unknown Chip, please check MBF.Boards.STM32G0.inc and then define maximum CPU Frequency here}
 {$endif}
 
 const

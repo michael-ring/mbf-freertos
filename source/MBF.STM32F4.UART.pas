@@ -1,4 +1,4 @@
-unit mbf.stm32f4.uart;
+unit MBF.STM32F4.UART;
 {
   This file is part of Pascal Microcontroller Board Framework (MBF)
   Copyright (c) 2015 -  Michael Ring

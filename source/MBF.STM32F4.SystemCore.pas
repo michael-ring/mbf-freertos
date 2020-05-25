@@ -1,4 +1,4 @@
-unit mbf.stm32f4.systemcore;
+unit MBF.STM32F4.SystemCore;
 {
   This file is part of Pascal Microcontroller Board Framework (MBF)
   Copyright (c) 2015 -  Michael Ring

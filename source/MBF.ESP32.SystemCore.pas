@@ -1,4 +1,4 @@
-unit mbf.esp32.systemcore;
+unit MBF.ESP32.SystemCore;
 {
   This file is part of Pascal Microcontroller Board Framework (MBF)
   Copyright (c) 2015 -  Michael Ring
