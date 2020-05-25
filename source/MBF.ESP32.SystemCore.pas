@@ -66,7 +66,7 @@ var
 implementation
 
 uses
-  freertos;
+  FreeRTOS;
 
 {$DEFINE IMPLEMENTATION}
 {$INCLUDE MBF.ESP32.SystemCore.inc}

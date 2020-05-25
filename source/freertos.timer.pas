@@ -1,6 +1,6 @@
 {$if not defined(INTERFACE) and not defined(IMPLEMENTATION)}
   {$OPTIMIZATION ON}
-  unit freertos.timer;
+  unit FreeRTOS.Timer;
   {$mode objfpc}{$H+}
   interface
   uses

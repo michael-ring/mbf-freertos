@@ -123,7 +123,7 @@ implementation
 
 uses
   cortexm4,
-  freertos,
+  FreeRTOS,
   MBF.BitHelpers;
 
 {$DEFINE IMPLEMENTATION}

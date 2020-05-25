@@ -1,10 +1,10 @@
 {$if not defined(INTERFACE) and not defined(IMPLEMENTATION)}
   {$OPTIMIZATION ON}
-  unit freertos.queue;
+  unit FreeRTOS.Queue;
   {$mode objfpc}{$H+}
   interface
   uses
-    freertos.task;
+    FreeRTOS.Task;
   {$I FreeRTOS.config.inc}
 {$endif}
 

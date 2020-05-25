@@ -85,7 +85,7 @@ implementation
 
 uses
   cortexm0,
-  freertos,
+  FreeRTOS,
   MBF.BitHelpers;
 
 {$DEFINE IMPLEMENTATION}

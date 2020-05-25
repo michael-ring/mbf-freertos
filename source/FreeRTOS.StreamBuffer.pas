@@ -1,6 +1,6 @@
 {$if not defined(INTERFACE) and not defined(IMPLEMENTATION)}
   {$OPTIMIZATION ON}
-  unit freertos.streambuffer;
+  unit FreeRTOS.StreamBuffer;
   {$mode objfpc}{$H+}
   interface
   {$I FreeRTOS.config.inc}

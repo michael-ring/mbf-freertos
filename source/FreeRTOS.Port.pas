@@ -1,6 +1,6 @@
 {$if not defined(INTERFACE) and not defined(IMPLEMENTATION)}
   {$OPTIMIZATION ON}
-  unit freertos.port;
+  unit FreeRTOS.Port;
   {$mode objfpc}{$H+}
   interface
   {$if defined(USE_SYSVIEW)}

@@ -1,4 +1,4 @@
-unit freertos.heap_4;
+unit FreeRTOS.Heap_4;
 {$if defined(CPUARM)}
   {$LINKLIB freertos_heap_4,static}
 {$elseif defined(CPUXTENSA)}

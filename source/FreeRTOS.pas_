@@ -1,15 +1,15 @@
 {$OPTIMIZATION ON}
-unit freertos;
+unit FreeRTOS;
 interface
 {$I FreeRTOS.config.inc}
 {$define INTERFACE}
-{$INCLUDE freertos.Port.pas}
-{$INCLUDE freertos.Task.pas}
+{$INCLUDE FreeRTOS.Port.pas}
+{$INCLUDE FreeRTOS.Task.pas}
 {$INCLUDE FreeRTOS.Queue.pas}
 {$INCLUDE FreeRTOS.Timer.pas}
-{$INCLUDE freertos.Semaphore.pas}
-{$INCLUDE freertos.StreamBuffer.pas}
-{$INCLUDE freertos.MessageBuffer.pas}
+{$INCLUDE FreeRTOS.Semaphore.pas}
+{$INCLUDE FreeRTOS.StreamBuffer.pas}
+{$INCLUDE FreeRTOS.MessageBuffer.pas}
 {$undef INTERFACE}
 
 {$if defined(CPUARM)}
@@ -24,13 +24,13 @@ function  __aeabi_uidiv(const numerator : uint32; denominator : uint32):uint32; 
 
 implementation
 {$define IMPLEMENTATION}
-{$INCLUDE freertos.Port.pas}
-{$INCLUDE freertos.Task.pas}
-{$INCLUDE freertos.Queue.pas}
-{$INCLUDE freertos.Timer.pas}
-{$INCLUDE freertos.Semaphore.pas}
-{$INCLUDE freertos.StreamBuffer.pas}
-{$INCLUDE freertos.MessageBuffer.pas}
+{$INCLUDE FreeRTOS.Port.pas}
+{$INCLUDE FreeRTOS.Task.pas}
+{$INCLUDE FreeRTOS.Queue.pas}
+{$INCLUDE FreeRTOS.Timer.pas}
+{$INCLUDE FreeRTOS.Semaphore.pas}
+{$INCLUDE FreeRTOS.StreamBuffer.pas}
+{$INCLUDE FreeRTOS.MessageBuffer.pas}
 {$undef IMPLEMENTATION}
 
 {$if defined(CPUARM)}

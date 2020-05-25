@@ -1,6 +1,6 @@
 {$if not defined(INTERFACE) and not defined(IMPLEMENTATION)}
   {$OPTIMIZATION ON}
-  unit freertos.messagebuffer;
+  unit FreeRTOS.MessageBuffer;
   {$mode objfpc}{$H+}
   interface
   {$I FreeRTOS.config.inc}
