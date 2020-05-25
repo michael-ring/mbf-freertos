@@ -82,16 +82,16 @@
 {$endif}
 {$if not defined(INTERFACE)}
   const
-    tmrCOMMAND_EXECUTE_CALLBACK_FROM_ISR = -2;
-    tmrCOMMAND_EXECUTE_CALLBACK          = -1;
-    tmrCOMMAND_START_DONT_TRACE          = 0;
+    {%H-}tmrCOMMAND_EXECUTE_CALLBACK_FROM_ISR = -2;
+    {%H-}tmrCOMMAND_EXECUTE_CALLBACK          = -1;
+    {%H-}tmrCOMMAND_START_DONT_TRACE          = 0;
     tmrCOMMAND_START                     = 1;
     tmrCOMMAND_RESET                     = 2; 
     tmrCOMMAND_STOP                      = 3;
     tmrCOMMAND_CHANGE_PERIOD             = 4;
     tmrCOMMAND_DELETE                    = 5;
 
-    tmrFIRST_FROM_ISR_COMMAND            = 6;
+    {%H-}tmrFIRST_FROM_ISR_COMMAND            = 6;
     tmrCOMMAND_START_FROM_ISR            = 6;
     tmrCOMMAND_RESET_FROM_ISR            = 7;
     tmrCOMMAND_STOP_FROM_ISR             = 8;

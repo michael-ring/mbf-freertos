@@ -1,6 +1,7 @@
 {$MACRO ON}
 {$if defined(CPUARM)}
   {$LINKLIB freertos,static}
+  {$LINKLIB libc_nano,static}
   {$DEFINE KERNEL_VERSION_NUMBER := 'V10.3.1'}
   {$DEFINE KERNEL_VERSION_MAJOR  := 10}
   {$DEFINE KERNEL_VERSION_MINOR  := 3}

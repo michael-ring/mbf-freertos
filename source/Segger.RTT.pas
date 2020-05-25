@@ -1,6 +1,7 @@
-unit seggerRTT;
+unit Segger.RTT;
 {$if defined(CPUARM)}
   {$LINKLIB seggerrtt,static}
+  {$LINKLIB libc_nano,static}
 {$endif}
 interface
   //function SEGGER_RTT_AllocDownBuffer(sName:Pchar; pBuffer:pointer; BufferSize:dword; Flags:dword):longint; external;
@@ -32,12 +33,12 @@ interface
   function SEGGER_RTT_GetBytesInBuffer(BufferIndex:dword):dword; external;
 
 implementation
-uses
+(*uses
   strings;
 function strlen(p: PChar):SizeInt; public name 'strlen';
 begin
   Result := strings.strlen(p);
 end;
-
+*)
 end.
 

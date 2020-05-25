@@ -13,8 +13,8 @@ interface
 {$undef INTERFACE}
 
 {$if defined(CPUARM)}
-function memset(pxBuffer:pointer; value : uint32; count : Tsize):pointer; public name 'memset';
-function memcpy(pxTarget : pointer; pxSource : pointer; count : Tsize):pointer; public name 'memcpy';
+//function memset(pxBuffer:pointer; value : uint32; count : Tsize):pointer; public name 'memset';
+//function memcpy(pxTarget : pointer; pxSource : pointer; count : Tsize):pointer; public name 'memcpy';
 procedure vApplicationGetIdleTaskMemory(var ppxIdleTaskTCBBuffer:pTStaticTaskTCB; var ppxIdleTaskStackBuffer:pTStackType; var pulIdleTaskStackSize:uint32); public name 'vApplicationGetIdleTaskMemory';
 procedure vApplicationGetTimerTaskMemory(var ppxTimerTaskTCBBuffer:pTStaticTaskTCB; var ppxTimerTaskStackBuffer:pTStackType; var pulTimerTaskStackSize:uint32); public name 'vApplicationGetTimerTaskMemory';
 {$endif}
@@ -34,6 +34,7 @@ implementation
 {$undef IMPLEMENTATION}
 
 {$if defined(CPUARM)}
+(*
 function memset(pxBuffer:pointer; value : uint32; count : Tsize):pointer;
 begin
   FillChar(pxBuffer^,count,value);
@@ -45,7 +46,7 @@ begin
   Move(pxSource^,pxTarget^,count);
   Result := pxTarget;
 end;
-
+*)
 procedure vApplicationGetIdleTaskMemory(var ppxIdleTaskTCBBuffer:pTStaticTaskTCB; var ppxIdleTaskStackBuffer:pTStackType; var pulIdleTaskStackSize:uint32);
 begin
   ppxIdleTaskTCBBuffer := @xIdleTaskTCB;

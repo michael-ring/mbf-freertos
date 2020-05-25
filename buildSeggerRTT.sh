@@ -17,22 +17,25 @@ rm -f lib/libseggerrtt.a 2>/dev/null
 
 echo "Compiling SeggerRTT for armv6m"
 
-FLAGS="-mcpu=cortex-m0plus -mfloat-abi=soft                   -mthumb -std=gnu11 -g3 -DDEBUG -c \
-       -I. -I$FREERTOSDIR/include -O0 -I$FREERTOSDIR/portable/GCC/ARM_CM0  -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
+FLAGS="-mcpu=cortex-m0plus -mfloat-abi=soft -mthumb -std=gnu11 -g3 -DDEBUG -c \
+       -I. -O2 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
 
-arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT.c"    $FLAGS -o lib/armv6m/SEGGER_RTT.o
-arm-none-eabi-ar rcs lib/armv6m/libseggerrtt.a lib/armv6m/SEGGER_RTT.o 
+arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT.c"            $FLAGS -o lib/armv6m/SEGGER_RTT.o
+arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT_ASM_ARMv7M.S" $FLAGS -o lib/armv6m/SEGGER_RTT_ASM.o
+arm-none-eabi-ar rcs lib/armv6m/libseggerrtt.a lib/armv6m/SEGGER_RTT.o lib/armv6m/SEGGER_RTT_ASM.o
 
 echo "Compiling SeggerRTT for armv7m"
-FLAGS="-mcpu=cortex-m3     -mfloat-abi=soft                   -mthumb -std=gnu11 -g3 -DDEBUG -c \
-       -I. -I$FREERTOSDIR/include -O0 -I$FREERTOSDIR/portable/GCC/ARM_CM3  -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
+FLAGS="-mcpu=cortex-m3     -mfloat-abi=soft -mthumb -std=gnu11 -g3 -DDEBUG -c \
+       -I. -O2 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
 
-arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT.c"    $FLAGS -o lib/armv7m/SEGGER_RTT.o
-arm-none-eabi-ar rcs lib/armv7m/libseggerrtt.a lib/armv7m/SEGGER_RTT.o
+arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT.c"            $FLAGS -o lib/armv7m/SEGGER_RTT.o
+arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT_ASM_ARMv7M.S" $FLAGS -o lib/armv7m/SEGGER_RTT_ASM.o
+arm-none-eabi-ar rcs lib/armv7m/libseggerrtt.a lib/armv7m/SEGGER_RTT.o lib/armv7m/SEGGER_RTT_ASM.o
 
 echo "Compiling SeggerRTT for armv7em"
 FLAGS="-mcpu=cortex-m4     -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -std=gnu11 -g3 -DDEBUG -c \
-       -I. -I$FREERTOSDIR/include -O0 -I$FREERTOSDIR/portable/GCC/ARM_CM4F -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
+       -I. -O2 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
 
-arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT.c"    $FLAGS -o lib/armv7em/SEGGER_RTT.o
-arm-none-eabi-ar rcs lib/armv7em/libseggerrtt.a lib/armv7em/SEGGER_RTT.o
+arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT.c"            $FLAGS -o lib/armv7em/SEGGER_RTT.o
+arm-none-eabi-gcc "$SEGGERRTTDIR/SEGGER_RTT_ASM_ARMv7M.S" $FLAGS -o lib/armv7em/SEGGER_RTT_ASM.o
+arm-none-eabi-ar rcs lib/armv7em/libseggerrtt.a lib/armv7em/SEGGER_RTT.o lib/armv7em/SEGGER_RTT_ASM.o

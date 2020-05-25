@@ -122,9 +122,9 @@ type
     queueOVERWRITE     = 2;
 
     queueQUEUE_TYPE_BASE               = 0;
-    queueQUEUE_TYPE_SET                = 0;
+    {%H-}queueQUEUE_TYPE_SET                = 0;
     queueQUEUE_TYPE_MUTEX              = 1;
-    queueQUEUE_TYPE_COUNTING_SEMAPHORE = 2;
+    {%H-}queueQUEUE_TYPE_COUNTING_SEMAPHORE = 2;
     queueQUEUE_TYPE_BINARY_SEMAPHORE   = 3;
     queueQUEUE_TYPE_RECURSIVE_MUTEX    = 4;
 
