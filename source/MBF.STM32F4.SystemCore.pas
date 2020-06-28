@@ -51,22 +51,46 @@ interface
 {$if defined(STM32F401)}
 const
   MaxCPUFrequency=84000000;
+  APB1MaxFrequency=MaxCPUFrequency div 2;
+  APB2MaxFrequency=MaxCPUFrequency;
+  PLLVCOMinFrequency=192000000;
+  PLLVCOMaxFrequency=432000000;
+  PLLINMinFrequency=1000000;
+  PLLINMaxFrequency=2000000;
   PLLNMIN=192;
   PLLNMAX=432;
 {$elseif defined(STM32F410) or defined(STM32F411) or defined(STM32F412) or defined(STM32F413) or defined(STM32F423)}
 const
   MaxCPUFrequency=100000000;
+  APB1MaxFrequency=MaxCPUFrequency div 2;
+  APB2MaxFrequency=MaxCPUFrequency;
+  PLLVCOMinFrequency=192000000;
+  PLLVCOMaxFrequency=432000000;
+  PLLINMinFrequency=1000000;
+  PLLINMaxFrequency=2000000;
   PLLNMIN=50;
   PLLNMAX=432;
 {$elseif defined(STM32F405_415) or defined(STM32F407_417)}
 const
   MaxCPUFrequency=168000000;
+  APB1MaxFrequency=MaxCPUFrequency div 2;
+  APB2MaxFrequency=MaxCPUFrequency;
+  PLLVCOMinFrequency=192000000;
+  PLLVCOMaxFrequency=432000000;
+  PLLINMinFrequency=1000000;
+  PLLINMaxFrequency=2000000;
   PLLNMIN=50;
   PLLNMAX=432;
 {$elseif defined(STM32F427_437) or defined(STM32F429_439)
       or defined(STM32F446) or defined(STM32F469_479)}
 const
   MaxCPUFrequency=180000000;
+  APB1MaxFrequency=MaxCPUFrequency div 2;
+  APB2MaxFrequency=MaxCPUFrequency;
+  PLLVCOMinFrequency=192000000;
+  PLLVCOMaxFrequency=432000000;
+  PLLINMinFrequency=1000000;
+  PLLINMaxFrequency=2000000;
   PLLNMIN=100;
   PLLNMAX=432;
 {$else}
@@ -93,6 +117,8 @@ type
     PLLQ : byte;
     PLLR : byte;
     AHBPRE : byte;
+    APB1PRE : byte;
+    APB2PRE : byte;
   end;
 
 type
@@ -110,6 +136,7 @@ type
     function GetAPB2PeripheralClockFrequency : longWord;
     function GetAPB2TimerClockFrequency : longWord;
     procedure SetCPUFrequency(const Value: longWord; aClockType : TClockType = TClockType.PLLHSI);
+    procedure SetCPUFrequency(const Params: TOscParameters; aClockType : TClockType = TClockType.PLLHSI);
     function GetCPUFrequency: longWord;
     function getMaxCPUFrequency : longWord;
   end;
@@ -172,24 +199,24 @@ end;
 
 function TSTM32SystemCore.GetAPB1PeripheralClockFrequency : longWord;
 begin
-  Result := GetHCLKFrequency div APBDividers[getBitsMasked(RCC.CFGR,%111 shl 8,8)];
+  Result := GetHCLKFrequency div APBDividers[getBitsMasked(RCC.CFGR,%111 shl 10,10)];
 end;
 
 function TSTM32SystemCore.GetAPB1TimerClockFrequency : longWord;
 begin
-  Result := GetHCLKFrequency div APBDividers[getBitsMasked(RCC.CFGR,%111 shl 8,8)];
-  if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 8,8)] >1 then
+  Result := GetHCLKFrequency div APBDividers[getBitsMasked(RCC.CFGR,%111 shl 10,10)];
+  if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 10,10)] >1 then
     Result := Result shl 1;
 
   if getBit(RCC.DCKCFGR,24)  = 0 then
   begin
-    if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 8,8)] = 1 then
+    if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 10,10)] = 1 then
       Result := GetAPB1PeripheralClockFrequency
     else
       Result := GetAPB1PeripheralClockFrequency*2;
   end
   else
-    if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 8,8)] <= 2 then
+    if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 10,10)] <= 2 then
       Result := GetAPB1PeripheralClockFrequency
     else
       Result := GetAPB1PeripheralClockFrequency*4;
@@ -197,24 +224,24 @@ end;
 
 function TSTM32SystemCore.GetAPB2PeripheralClockFrequency : longWord;
 begin
-  Result := GetHCLKFrequency div APBDividers[getBitsMasked(RCC.CFGR,%111 shl 11,11)];
+  Result := GetHCLKFrequency div APBDividers[getBitsMasked(RCC.CFGR,%111 shl 13,13)];
 end;
 
 function TSTM32SystemCore.GetAPB2TimerClockFrequency : longWord;
 begin
-  Result := GetHCLKFrequency div APBDividers[getBitsMasked(RCC.CFGR,%111 shl 11,11)];
-  if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 11,11)] >1 then
+  Result := GetHCLKFrequency div APBDividers[getBitsMasked(RCC.CFGR,%111 shl 13,13)];
+  if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 13,13)] >1 then
     Result := Result shl 1;
 
   if getBit(RCC.DCKCFGR,24)  = 0 then
   begin
-    if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 11,11)] = 1 then
+    if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 13,13)] = 1 then
       Result := GetAPB2PeripheralClockFrequency
     else
       Result := GetAPB2PeripheralClockFrequency*2;
   end
   else
-    if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 11,11)] <= 2 then
+    if APBDividers[getBitsMasked(RCC.CFGR,%111 shl 13,13)] <= 2 then
       Result := GetAPB2PeripheralClockFrequency
     else
       Result := GetAPB2PeripheralClockFrequency*4;
@@ -248,11 +275,9 @@ var
   PLLP : byte;
   LastError : longWord;
   PLLOutFrequency : longWord;
-  MinVCOFrequency,MaxVCOFrequency,PLLInFrequency,SysClockFrequency,HCLKFrequency : longWord;
+  PLLInFrequency,SysClockFrequency,HCLKFrequency : longWord;
 begin
-  Result.Frequency := 0;
-  MinVCOFrequency := 192000000;
-  MaxVCOFrequency := 432000000;
+  FillChar(Result,sizeof(Result),0);
 
   if aHCLKFrequency > MaxCPUFrequency then
     aHCLKFrequency := MaxCPUFrequency;
@@ -300,12 +325,12 @@ begin
       for PLLM := 2 to 63 do
       begin
         PLLInFrequency := SysClockFrequency div PLLM;
-        if (PLLInFrequency >=1000000) and (PLLInFrequency <=2000000) then
+        if (PLLInFrequency >=PLLINMinFrequency) and (PLLInFrequency <=PLLInMaxFrequency) then
         begin
           for PLLN := PLLNMIN to PLLNMAX do
           begin
             PLLOUTFrequency := PLLInFrequency * PLLN;
-            if (PLLOUTFrequency < MinVCOFrequency) or (PLLOUTFrequency > MaxVCOFrequency) then
+            if (PLLOUTFrequency < PLLVCOMinFrequency) or (PLLOUTFrequency > PLLVCOMaxFrequency) then
               continue;
             for PLLP := 0 to 3 do
             begin
@@ -335,12 +360,26 @@ begin
   end;
   if Result.AHBPRE = 7 then
     Result.AHBPRE := 0;
+  Result.APB1PRE := 0;
+  if (Result.Frequency div 2) > APB1MaxFrequency then
+    Result.APB1PRE:=5;
+  if Result.Frequency > APB1MaxFrequency then
+    Result.APB1PRE:=4;
+
+  if Result.Frequency > APB2MaxFrequency then
+    Result.APB2PRE:=4
+  else
+    Result.APB2PRE:=0;
 end;
 
 procedure TSTM32SystemCore.SetCPUFrequency(const Value: longWord; aClockType : TClockType = TClockType.PLLHSI);
+begin
+  SetCPUFrequency(getFrequencyParameters(Value,aClockType),aClockType);
+end;
+
+procedure TSTM32SystemCore.SetCPUFrequency(const Params: TOscParameters; aClockType : TClockType = TClockType.PLLHSI);
 var
   WaitStates : byte;
-  Params : TOscParameters;
 begin
   //Make sure that HSI Clock is enabled
   if GetBit(RCC.CR,0) = 0 then
@@ -365,24 +404,21 @@ begin
     WaitBitIsCleared(RCC.CR,25);
   end;
 
-  Params := getFrequencyParameters(Value,aClockType);
-
   //Set Flash Waitstates
-  if Value >= 150000000 then
+  if Params.Frequency >= 150000000 then
     WaitStates := 5
-  else if Value >= 120000000 then
+  else if Params.Frequency >= 120000000 then
     WaitStates := 4
-  else if Value >= 90000000 then
+  else if Params.Frequency >= 90000000 then
     WaitStates := 3
-  else if Value >= 60000000 then
+  else if Params.Frequency >= 60000000 then
     WaitStates := 2
-  else if Value >= 30000000 then
+  else if Params.Frequency >= 30000000 then
     WaitStates := 1
   else
     WaitStates := 0;
 
   SetNibble(FLASH.ACR,WaitStates,0);
-
   // Wait until Waitstates are set
   repeat
   until getNibble(FLASH.ACR,0) = WaitStates;
@@ -392,15 +428,13 @@ begin
   repeat
   until GetNibble(RCC.CFGR,4) = Params.AHBPRE;
 
-  // Set APB1 Prescaler
-  SetBitsMasked(RCC.CFGR,1,%111 shl 10,10);
+  SetBitsMasked(RCC.CFGR,Params.APB1PRE,%111 shl 10,10);
   repeat
-  until GetBitsMasked(RCC.CFGR,%111 shl 10,10) = 1;
+  until GetBitsMasked(RCC.CFGR,%111 shl 10,10) = Params.APB1PRE;
 
-  // Set APB2 Prescaler
-  SetBitsMasked(RCC.CFGR,1,%111 shl 13,13);
+  SetBitsMasked(RCC.CFGR,Params.APB2PRE,%111 shl 13,13);
   repeat
-  until GetBitsMasked(RCC.CFGR,%111 shl 13,13) = 1;
+  until GetBitsMasked(RCC.CFGR,%111 shl 13,13) = Params.APB2PRE;
 
   case aClockType of
     TClockType.HSI :

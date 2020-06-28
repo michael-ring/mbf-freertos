@@ -36,9 +36,11 @@
       xNumberOfSuccessfulFrees : TSize;
     end;
 
-  procedure vPortYield; external name 'vPortYield';
-  procedure portYield; external name 'vPortYield';
-  procedure portEND_SWITCHING_ISR(xSwitchRequired : TBaseType);
+  //procedure vPortYield; external name 'vPortYield';
+  //procedure portYield; external name 'vPortYield';
+  procedure vPortYield;
+  procedure portYield;
+  procedure portEND_SWITCHING_ISR(xSwitchRequired : TBaseType); public name 'portEND_SWITCHING_ISR';
   procedure portYIELD_FROM_ISR(xSwitchRequired : TBaseType); external name 'portEND_SWITCHING_ISR';
 
   procedure vPortEnterCritical; external name 'vPortEnterCritical';
@@ -48,8 +50,8 @@
 
   function  portSET_INTERRUPT_MASK_FROM_ISR : uint32; external name 'ulSetInterruptMaskFromISR';
   procedure portCLEAR_INTERRUPT_MASK_FROM_ISR(ulMask : uint32); external name 'vClearInterruptMaskFromISR';
-  procedure portDISABLE_INTERRUPTS;
-  procedure portENABLE_INTERRUPTS;
+  procedure portDISABLE_INTERRUPTS; public name 'portDISABLE_INTERRUPTS';
+  procedure portENABLE_INTERRUPTS; public name 'portENABLE_INTERRUPTS';
   procedure portENTER_CRITICAL; external name 'vPortEnterCritical';
   procedure portEXIT_CRITICAL; external name 'vPortExitCritical';
 
@@ -98,6 +100,27 @@
       cpsie i
     end;
 
+    procedure vPortYield;
+    var
+      portNVIC_INT_CTRL_REG : uint32 absolute $e000ed04;
+    begin
+      portNVIC_INT_CTRL_REG := 1 shl 28;
+      asm
+        dsb
+        isb
+      end;
+    end;
+
+    procedure portYield;
+    var
+      portNVIC_INT_CTRL_REG : uint32 absolute $e000ed04;
+    begin
+      portNVIC_INT_CTRL_REG := 1 shl 28;
+      asm
+        dsb
+        isb
+      end;
+    end;
     procedure portEND_SWITCHING_ISR(xSwitchRequired : TBaseType);
     var
       portNVIC_INT_CTRL_REG : uint32 absolute $e000ed04;

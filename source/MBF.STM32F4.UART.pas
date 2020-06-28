@@ -45,7 +45,8 @@ interface
 
 uses
   MBF.STM32F4.SystemCore,
-  MBF.STM32F4.GPIO;
+  MBF.STM32F4.GPIO,
+  FreeRTOS;
 
 type
   TUART_Registers = TUSART_Registers;
@@ -128,9 +129,11 @@ type
 
 const
   DefaultUARTBaudrate=115200;
-  DefaultUARTTimeOut=10000;
+  DefaultUARTTimeOut=1000;
 
 type
+  TUARTHandlerProc = procedure(var UART : TUART_Registers;const UARTNum : byte;var xHigherPriorityTaskWoken : uint32);
+
   TUARTBitsPerWord = (
     Eight = %0,
     Nine = %1
@@ -165,7 +168,8 @@ type
     procedure SetStopBits(const aStopbit: TUARTStopBits);
     function  GetClockSource : TUARTClockSource;
     procedure SetClockSource(const aClockSource : TUARTClockSource);
-
+    function getRxStreamBufferHandle : TStreamBufferHandle; inline;
+    function getTxStreamBufferHandle : TStreamBufferHandle; inline;
   public
     procedure initialize(const ARxPin : TUARTRXPins;
                        const ATxPin : TUARTTXPins;aBaudRate : longWord = 115200);
@@ -209,113 +213,137 @@ uses
   {$if defined(USE_SYSVIEW)}Segger.SysView,{$endif}
   MBF.BitHelpers;
 
+var
+  TxStreamBufferHandles : array[1..10] of TStreamBufferHandle;
+  RxStreamBufferHandles : array[1..10] of TStreamBufferHandle;
+  UARTIRQHandlers : array[1..10] of TUARTHandlerProc;
+
+procedure UARTGenericHandler(var UART : TUART_Registers;const UARTNum : byte; var xHigherPriorityTaskWoken : uint32);
+var
+  receivedChar : Word;
+  byteToSend : byte;
+  count : TSize;
+begin
+  if (getBit(UART.SR,7)=1) and (getBit(UART.CR1,7)=1) then
+  begin
+    ClearBit(UART.CR1,7); //Disable TXE Interrupt
+    if (TxStreamBufferHandles[UARTNum] <> nil) then
+    begin
+      if (xStreamBufferIsEmpty(TxStreamBufferHandles[UARTNum]) = pdTrue) then
+      begin
+        {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_Print('TX done');{$endif}
+      end
+      else
+      begin
+        count := xStreamBufferReceiveFromISR(TxStreamBufferHandles[UARTNum],@byteToSend,1,@xHigherPriorityTaskWoken); //Send the next Byte to USART Data Register
+        UART.DR := byteToSend;
+        SetBit(UART.CR1,7);
+      end;
+    end;
+  end;
+  if (getBit(UART.SR,5)=1) and (getBit(UART.CR1,5)=1) then
+  begin
+    ReceivedChar := UART.DR;
+    if (RxStreamBufferHandles[UARTNum] <> nil) then
+    begin
+      if (xStreamBufferIsFull(RxStreamBufferHandles[UARTNum]) = pdTrue) then
+      begin
+        {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_WarnfHost('!RX %02x',[ReceivedChar]);{$endif}
+      end
+      else
+      begin
+        {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_PrintfHost(' RX %02x',[ReceivedChar]);{$endif}
+        xStreamBufferSendFromISR(RxStreamBufferHandles[UARTNum],@ReceivedChar,1,@xHigherPriorityTaskWoken);
+      end;
+    end;
+  end;
+end;
+
 {$if defined(HAS_USART1)}
   procedure USART1_IRQHandler; interrupt; public name 'USART1_IRQHandler';
+  var
+    xHigherPriorityTaskWoken : uint32;
   begin
     {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
+    xHigherPriorityTaskWoken := pdFalse;
+    UARTIRQHandlers[1](USART1,1,xHigherPriorityTaskWoken);
     {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   end;
 {$endif}
 
 {$if defined(HAS_USART2)}
   procedure USART2_IRQHandler; interrupt; public name 'USART2_IRQHandler';
+  var
+    xHigherPriorityTaskWoken : uint32;
   begin
     {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
+    xHigherPriorityTaskWoken := pdFalse;
+    UARTIRQHandlers[2](USART2,2,xHigherPriorityTaskWoken);
     {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   end;
 {$endif}
 
 {$if defined(HAS_USART3)}
   procedure USART3_IRQHandler; interrupt; public name 'USART3_IRQHandler';
   begin
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    UARTIRQHandlers[3](USART3,3);
   end;
 {$endif}
 
 {$if defined(HAS_UART4)}
   procedure UART4_IRQHandler; interrupt; public name 'UART4_IRQHandler';
   begin
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    UARTIRQHandlers[4](UART4,4);
   end;
 {$endif}
 
 {$if defined(HAS_UART5)}
   procedure UART5_IRQHandler; interrupt; public name 'UART5_IRQHandler';
   begin
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    UARTIRQHandlers[5](UART5,5);
   end;
 {$endif}
 
 {$if defined(HAS_USART6)}
   procedure USART6_IRQHandler; interrupt; public name 'USART6_IRQHandler';
+  var
+    xHigherPriorityTaskWoken : uint32;
   begin
     {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
+    xHigherPriorityTaskWoken := pdFalse;
+    UARTIRQHandlers[1](USART6,6,xHigherPriorityTaskWoken);
     {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
   end;
 {$endif}
 
 {$if defined(HAS_UART7)}
   procedure UART7_IRQHandler; interrupt; public name 'UART7_IRQHandler';
   begin
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    UARTIRQHandlers[7](UART7,7);
   end;
 {$endif}
 
 {$if defined(HAS_UART8)}
   procedure UART8_IRQHandler; interrupt; public name 'UART8_IRQHandler';
   begin
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    UARTIRQHandlers[8](UART8,8);
   end;
 {$endif}
 
 {$if defined(HAS_UART9)}
   procedure UART9_IRQHandler; interrupt; public name 'UART9_IRQHandler';
   begin
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    UARTIRQHandlers[9](UART9,9);
   end;
 {$endif}
 
 {$if defined(HAS_UART10)}
   procedure UART10_IRQHandler; interrupt; public name 'UART10_IRQHandler';
   begin
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordEnterISR;{$endif}
-    asm
-      bkpt
-    end;
-    {$if defined(USE_SYSVIEW)}SEGGER_SYSVIEW_RecordExitISR;{$endif}
+    UARTIRQHandlers[10](UART10,10);
   end;
 {$endif}
 
@@ -331,19 +359,22 @@ begin
 end;
 
 procedure TUARTRegistersHelper.initialize(const ARxPin : TUARTRXPins;
-                       const ATxPin : TUARTTXPins; aBaudRate : longWord = 115200);
+                       const ATxPin : TUARTTXPins; aBaudRate : longWord = DefaultUARTBaudrate);
+var
+  UARTID : byte;
+  UARTIRQn : TIRQn_Enum;
 begin
   case longWord(@Self) of
-    {$ifdef has_usart1}USART1_BASE : setBit(RCC.APB2ENR,4); {$endif}
-    {$ifdef has_usart2}USART2_BASE : setBit(RCC.APB1ENR,17);{$endif}
-    {$ifdef has_usart3}USART3_BASE : setBit(RCC.APB1ENR,18);{$endif}
-    {$ifdef has_uart4} UART4_BASE  : setBit(RCC.APB1ENR,19);{$endif}
-    {$ifdef has_uart5} UART5_BASE  : setBit(RCC.APB1ENR,20);{$endif}
-    {$ifdef has_usart6}USART6_BASE : setBit(RCC.APB2ENR,5); {$endif}
-    {$ifdef has_uart7} UART7_BASE  : setBit(RCC.APB1ENR,30);{$endif}
-    {$ifdef has_uart8} UART8_BASE  : SetBit(RCC.APB1ENR,31);{$endif}
-    {$ifdef has_uart9} UART9_BASE  : setBit(RCC.APB2ENR,6); {$endif}
-    {$ifdef has_uart10}UART10_BASE : setBit(RCC.APB2ENR,7); {$endif}
+    {$ifdef has_usart1}USART1_BASE : begin setBit(RCC.APB2ENR,4);  UARTID:=1;  UARTIRQn:=TIRQn_Enum.USART1_IRQn;  end;{$endif}
+    {$ifdef has_usart2}USART2_BASE : begin setBit(RCC.APB1ENR,17); UARTID:=2;  UARTIRQn:=TIRQn_Enum.USART2_IRQn;  end;{$endif}
+    {$ifdef has_usart3}USART3_BASE : begin setBit(RCC.APB1ENR,18); UARTID:=3;  UARTIRQn:=TIRQn_Enum.USART3_IRQn;  end;{$endif}
+    {$ifdef has_uart4} UART4_BASE  : begin setBit(RCC.APB1ENR,19); UARTID:=4;  UARTIRQn:=TIRQn_Enum.USART4_IRQn;  end;{$endif}
+    {$ifdef has_uart5} UART5_BASE  : begin setBit(RCC.APB1ENR,20); UARTID:=5;  UARTIRQn:=TIRQn_Enum.USART5_IRQn;  end;{$endif}
+    {$ifdef has_usart6}USART6_BASE : begin setBit(RCC.APB2ENR,5);  UARTID:=6;  UARTIRQn:=TIRQn_Enum.USART6_IRQn;  end;{$endif}
+    {$ifdef has_uart7} UART7_BASE  : begin setBit(RCC.APB1ENR,30); UARTID:=7;  UARTIRQn:=TIRQn_Enum.USART7_IRQn;  end;{$endif}
+    {$ifdef has_uart8} UART8_BASE  : begin SetBit(RCC.APB1ENR,31); UARTID:=8;  UARTIRQn:=TIRQn_Enum.USART8_IRQn;  end;{$endif}
+    {$ifdef has_uart9} UART9_BASE  : begin setBit(RCC.APB2ENR,6);  UARTID:=9;  UARTIRQn:=TIRQn_Enum.USART9_IRQn;  end;{$endif}
+    {$ifdef has_uart10}UART10_BASE : begin setBit(RCC.APB2ENR,7);  UARTID:=10; UARTIRQn:=TIRQn_Enum.USART10_IRQn; end;{$endif}
   end;
   // First, load Reset Value, this also turns off the UART
   // Create the basic config for all n81 use cases
@@ -355,12 +386,26 @@ begin
   // Set Defaults not RTS/CTS
   self.CR3:= 0;
 
-  setBit(self.CR1,2);
-  setBit(self.CR1,3);
+  SetBaudRate(aBaudrate);
 
-  SetBaudRate(DefaultUARTBaudrate);
-  GPIO.PinMode[longWord(aRxPin) and $ff] := TPinMode((longWord(aRxPin) shr 8));
-  GPIO.PinMode[longWord(aTxPin) and $ff] := TPinMode((longWord(aTxPin) shr 8));
+  if aRxPin > TUARTRXPins.NONE_USART then
+  begin
+    setBit(self.CR1,2);
+    GPIO.PinMode[longWord(aRxPin) and $ff] := TPinMode((longWord(aRxPin) shr 8));
+    RxStreamBufferHandles[UARTID] := xStreamBufferCreate(100,0);
+    SetBit(USART1.CR1,5); //RXNE Interrupt enable
+    SetBit(USART1.CR3,0); //EIE  Interrupt enable
+  end;
+  if aTxPin > TUARTTXPins.NONE_USART then
+  begin
+    setBit(self.CR1,3);
+    GPIO.PinMode[longWord(aTxPin) and $ff] := TPinMode((longWord(aTxPin) shr 8));
+    TxStreamBufferHandles[UARTID] := xStreamBufferCreate(100,0);
+  end;
+
+  NVIC_SetPriority(UARTIRQn,6);
+  NVIC_EnableIRQ(UARTIRQn);
+
   Enable;
 end;
 
@@ -507,10 +552,50 @@ begin
   Result := self.DR;
 end;
 
+function TUARTRegistersHelper.getRxStreamBufferHandle : TStreamBufferHandle; inline;
+begin
+    case longWord(@self) of
+    {$ifdef has_usart1}USART1_BASE : Result := RxStreamBufferHandles[1];{$endif}
+    {$ifdef has_usart2}USART2_BASE : Result := RxStreamBufferHandles[2];{$endif}
+    {$ifdef has_usart3}USART3_BASE : Result := RxStreamBufferHandles[3];{$endif}
+    {$ifdef has_uart4} UART4_BASE  : Result := RxStreamBufferHandles[4];{$endif}
+    {$ifdef has_uart5} UART5_BASE  : Result := RxStreamBufferHandles[5];{$endif}
+    {$ifdef has_usart6}USART6_BASE : Result := RxStreamBufferHandles[6];{$endif}
+    {$ifdef has_uart7} UART7_BASE  : Result := RxStreamBufferHandles[7];{$endif}
+    {$ifdef has_uart8} UART8_BASE  : Result := RxStreamBufferHandles[8];{$endif}
+    {$ifdef has_uart9} UART9_BASE  : Result := RxStreamBufferHandles[9];{$endif}
+    {$ifdef has_uart10}UART10_BASE : Result := RxStreamBufferHandles[10];{$endif}
+  end;
+end;
+
+function TUARTRegistersHelper.getTXStreamBufferHandle : TStreamBufferHandle; inline;
+begin
+    case longWord(@self) of
+    {$ifdef has_usart1}USART1_BASE : Result := TXStreamBufferHandles[1];{$endif}
+    {$ifdef has_usart2}USART2_BASE : Result := TXStreamBufferHandles[2];{$endif}
+    {$ifdef has_usart3}USART3_BASE : Result := TXStreamBufferHandles[3];{$endif}
+    {$ifdef has_uart4} UART4_BASE  : Result := TXStreamBufferHandles[4];{$endif}
+    {$ifdef has_uart5} UART5_BASE  : Result := TXStreamBufferHandles[5];{$endif}
+    {$ifdef has_usart6}USART6_BASE : Result := TXStreamBufferHandles[6];{$endif}
+    {$ifdef has_uart7} UART7_BASE  : Result := TXStreamBufferHandles[7];{$endif}
+    {$ifdef has_uart8} UART8_BASE  : Result := TXStreamBufferHandles[8];{$endif}
+    {$ifdef has_uart9} UART9_BASE  : Result := TXStreamBufferHandles[9];{$endif}
+    {$ifdef has_uart10}UART10_BASE : Result := TXStreamBufferHandles[10];{$endif}
+  end;
+end;
+
 {$DEFINE IMPLEMENTATION}
 {$I MBF.STM32.UART.inc}
 {$UNDEF IMPLEMENTATION}
 
 {$ENDREGION}
-
+var
+  i : integer;
+begin
+  for i := 1 to 10 do
+  begin
+    RXStreamBufferHandles[i] := nil;
+    TXStreambufferHandles[i] := nil;
+    UARTIRQHandlers[i] := @UARTGenericHandler;
+  end;
 end.

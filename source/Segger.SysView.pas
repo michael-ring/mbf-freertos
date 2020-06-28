@@ -13,6 +13,13 @@ uses
   MBF.__CONTROLLERTYPE__.SystemCore;
 
 type
+  TSEGGER_SYSVIEW_Options = (
+    LOG=0,
+    WARNING=1,
+    ERROR=2
+  );
+
+type
   TSEGGER_SYSVIEW_SEND_SYS_DESC_FUNC = procedure;
   TSEGGER_SYSVIEW_TASKINFO = record
       TaskID : uint32;
@@ -122,34 +129,71 @@ procedure SEGGER_SYSVIEW_Error(s:Pchar);cdecl;external;
 procedure SEGGER_SYSVIEW_EnableEvents(EnableMask:uint32);cdecl;external;
 procedure SEGGER_SYSVIEW_DisableEvents(DisableMask:uint32);cdecl;external;
 //procedure SEGGER_SYSVIEW_Conf;cdecl;external;
-procedure SEGGER_SYSVIEW_Conf;
+procedure SEGGER_SYSVIEW_Conf(ExtraConfig : String = '');
 function  SEGGER_SYSVIEW_X_GetTimestamp:uint32;cdecl;external;
 function  SEGGER_SYSVIEW_X_GetInterruptId:uint32;cdecl;external;
 procedure SEGGER_SYSVIEW_X_StartComm;cdecl;external;
 procedure SEGGER_SYSVIEW_X_OnEventRecorded(NumBytes:dword);cdecl;external;
 
+procedure traceISR_EXIT_TO_SCHEDULER; external name 'SEGGER_SYSVIEW_RecordExitISRToScheduler';
+procedure traceISR_EXIT; external name 'SEGGER_SYSVIEW_RecordExitISR';
+procedure traceISR_ENTER; external name 'SEGGER_SYSVIEW_RecordEnterISR';
+
+
 implementation
+var
+  SYSVIEW_X_OS_TraceAPI: TSEGGER_SYSVIEW_OS_API; external name 'SYSVIEW_X_OS_TraceAPI';
+  SYSVIEW_EXTRA_CONFIG : String;
+function _cbGetTime : int64; cdecl; external name '_cbGetTime';
+procedure _cbSendTaskList; cdecl; external name '_cbSendTaskList';
 
 procedure _cbSendSystemDesc;
+var
+  CPUID : longword absolute $E000ED00;
+  SYSVIEW_CONFIG : string;
 begin
-  SEGGER_SYSVIEW_SendSysDesc('N=dummy');
-  {$IF defined(CPUARMV6)}
-  SEGGER_SYSVIEW_SendSysDesc('D=Cortex-M0');
-  {$ELSEIF defined(CPUARMV7M)}
-  SEGGER_SYSVIEW_SendSysDesc('D=Cortex-M3');
-  {$ELSEIF defined(CPUARMV7EM)}
-  SEGGER_SYSVIEW_SendSysDesc('D=Cortex-M4/7');
+  {$IF DEFINED(CPUARM)}
+  SYSVIEW_CONFIG := 'C="Cortex-M';
+  case (CPUID shr 4) and $fff of
+    $C20 : SYSVIEW_CONFIG:=SYSVIEW_CONFIG+'0 (r';
+    $C60 : SYSVIEW_CONFIG:=SYSVIEW_CONFIG+'0+ (r';
+    $C23 : SYSVIEW_CONFIG:=SYSVIEW_CONFIG+'3 (r';
+    $C24 : SYSVIEW_CONFIG:=SYSVIEW_CONFIG+'4 (r';
+    $C27 : SYSVIEW_CONFIG:=SYSVIEW_CONFIG+'7 (r';
+    $D20 : SYSVIEW_CONFIG:=SYSVIEW_CONFIG+'23 (r';
+    $D21 : SYSVIEW_CONFIG:=SYSVIEW_CONFIG+'33 (r';
+  end;
+  SYSVIEW_CONFIG:=SYSVIEW_CONFIG+char(((CPUID shr 20) and $0f)+ord('0'))+'.';
+  SYSVIEW_CONFIG:=SYSVIEW_CONFIG+char((CPUID  and $0f)+ord('0'))+')"';
+  {$ELSEIF DEFINED(CPURISCV32)}
+  SYSVIEW_CONFIG := 'C=RiscV32';
+  {$ELSEIF DEFINED(CPURISCV64)}
+  SYSVIEW_CONFIG := 'C=RiscV64';
   {$ELSE}
-  SEGGER_SYSVIEW_SendSysDesc('D=unknown');
+  SYSVIEW_CONFIG := 'C=Unknown';
+  {$ERROR Unknown Architecture}
   {$ENDIF}
+  {$IF DEFINED(EMBEDDED)}
+  SYSVIEW_CONFIG:=SYSVIEW_CONFIG+',O=NoOS'+#0;
+  {$ELSEIF DEFINED(FREERTOS)}
+  SYSVIEW_CONFIG:=SYSVIEW_CONFIG+',O=FreeRTOS'+#0;
+  {$ELSE}
+  SYSVIEW_CONFIG:=SYSVIEW_CONFIG+',O=Unknown'+#0;
+  {$ERROR Unknown Target}
+  {$ENDIF}
+  SEGGER_SYSVIEW_SendSysDesc(@SYSVIEW_CONFIG[1]);
   SEGGER_SYSVIEW_SendSysDesc('I#15=SysTick');
+  if length(SYSVIEW_EXTRA_CONFIG) > 1 then
+    SEGGER_SYSVIEW_SendSysDesc(@SYSVIEW_EXTRA_CONFIG[1]);
 end;
 
-procedure SEGGER_SYSVIEW_Conf;
+procedure SEGGER_SYSVIEW_Conf(ExtraConfig : String = '');
 begin
-  SEGGER_SYSVIEW_Init(SystemCoreClock,SystemCoreClock,nil,@_cbSendSystemDesc);
+  SYSVIEW_EXTRA_CONFIG:=ExtraConfig+#0;
+  SEGGER_SYSVIEW_Init(SystemCoreClock,SystemCoreClock,@SYSVIEW_X_OS_TraceAPI,@_cbSendSystemDesc);
   SEGGER_SYSVIEW_SetRAMBase($20000000);
 end;
 
+begin
 end.
 

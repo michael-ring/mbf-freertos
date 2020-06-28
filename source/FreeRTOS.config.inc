@@ -1,6 +1,10 @@
 {$MACRO ON}
 {$if defined(CPUARM)}
-  {$LINKLIB freertos,static}
+  {$if defined(USE_SYSVIEW)}
+    {$LINKLIB libfreertos_sysview,static}
+  {$else}
+    {$LINKLIB libfreertos,static}
+  {$endif}
   {$LINKLIB libc_nano,static}
   {$DEFINE KERNEL_VERSION_NUMBER := 'V10.3.1'}
   {$DEFINE KERNEL_VERSION_MAJOR  := 10}
