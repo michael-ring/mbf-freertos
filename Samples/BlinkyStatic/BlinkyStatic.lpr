@@ -23,7 +23,7 @@ program BlinkyStatic;
 uses
   MBF.__CONTROLLERTYPE__.SystemCore,
   MBF.__CONTROLLERTYPE__.GPIO,
-  freertos;
+  FreeRTOS;
 
 procedure BlinkyTask({%H-}pvParameters:pointer);
 begin
@@ -54,7 +54,7 @@ begin
                                          nil,
                                          tskIDLE_PRIORITY+1,
                                          @BlinkyTaskStack,
-                                         @BlinkyTaskTCB);
+                                         BlinkyTaskTCB);
   if blinkyTaskHandle <> nil then
     vTaskStartScheduler;
   repeat

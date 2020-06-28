@@ -23,8 +23,8 @@ program Blinky;
 uses
   MBF.__CONTROLLERTYPE__.SystemCore,
   MBF.__CONTROLLERTYPE__.GPIO,
-  freertos,
-  freertos.heap_4;
+  FreeRTOS,
+  FreeRTOS.Heap_4;
 
 procedure BlinkyTask({%H-}pvParameters:pointer);
 begin

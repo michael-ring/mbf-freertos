@@ -60,6 +60,10 @@ cat devicelist | grep -v "^#" | while read BOARD_OR_CPU SUBARCH DEVICE DEVICESVD
     BINUTILS_PATH=xtensa-esp32-elf-
   fi
 
+  if [ -n "$DEVICESVD" ]; then
+    DEVICESVD="$(pwd)/templates/$DEVICESVD"
+  fi
+
   DONOTGENERATE=
   if [ -f $APPNAME/devicelist.ignore ]; then
     grep "$BOARD_OR_CPU" $APPNAME/devicelist.ignore >/dev/null

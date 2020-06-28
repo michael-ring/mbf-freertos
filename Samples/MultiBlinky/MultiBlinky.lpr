@@ -23,7 +23,7 @@ program MultiBlinky;
 uses
   MBF.__CONTROLLERTYPE__.SystemCore,
   MBF.__CONTROLLERTYPE__.GPIO,
-  freertos;
+  FreeRTOS;
 
 procedure BlinkyTask1({%H-}pvParameters:pointer);
 begin
@@ -85,21 +85,21 @@ begin
                                          nil,
                                          tskIDLE_PRIORITY+1,
                                          @BlinkyTask1Stack,
-                                         @BlinkyTask1TCB);
+                                         {%H-}BlinkyTask1TCB);
   BlinkyTask2Handle :=  xTaskCreateStatic(@BlinkyTask2,
                                          'BlinkyTask2',
                                          configMINIMAL_STACK_SIZE,
                                          nil,
                                          tskIDLE_PRIORITY+1,
                                          @BlinkyTask2Stack,
-                                         @BlinkyTask2TCB);
+                                         {%H-}BlinkyTask2TCB);
   BlinkyTask3Handle :=  xTaskCreateStatic(@BlinkyTask3,
                                          'BlinkyTask3',
                                          configMINIMAL_STACK_SIZE,
                                          nil,
                                          tskIDLE_PRIORITY+1,
                                          @BlinkyTask3Stack,
-                                         @BlinkyTask3TCB);
+                                         {%H-}BlinkyTask3TCB);
   if (blinkyTask1Handle <> nil) and (blinkyTask2Handle <> nil) and (blinkyTask3Handle <> nil) then
     vTaskStartScheduler;
   repeat

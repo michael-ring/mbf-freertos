@@ -3,8 +3,9 @@ FREERTOSDIR=FreeRTOS-Kernel/
 SYSVIEWDIR=SeggerSYSVIEW/
 
 rm -rf FreeRTOS-Kernel-patched 2>/dev/null
-cp -r $FREERTOSDIR FreeRTOS-Kernel-patched
-FREERTOSDIR=FreeRTOS-Kernel-patched/
+mv $FREERTOSDIR FreeRTOS-Kernel-saved
+cp -r FreeRTOS-Kernel-saved $FREERTOSDIR
+FREERTOSDIR=FreeRTOS-Kernel/
 cd $FREERTOSDIR
 find . -type f -exec dos2unix {} \; 2>/dev/null
 patch -p1 < ../$SYSVIEWDIR/FreeRTOSV10_3_Core.patch
@@ -34,7 +35,7 @@ echo '#define INCLUDE_xTaskGetIdleTaskHandle 1' >>FreeRTOSConfig.h
 echo '#define INCLUDE_pxTaskGetStackStart 1' >>FreeRTOSConfig.h
 
 FLAGS="-mcpu=cortex-m0plus -mfloat-abi=soft                   -mthumb -std=gnu11 -g3 -DDEBUG -c \
-       -I. -I$SYSVIEWDIR -I$FREERTOSDIR/include -O2 -I$FREERTOSDIR/portable/GCC/ARM_CM0  -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
+       -I. -I$SYSVIEWDIR -I$FREERTOSDIR/include -O0 -I$FREERTOSDIR/portable/GCC/ARM_CM0  -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
 arm-none-eabi-gcc "$FREERTOSDIR/tasks.c" $FLAGS -E | grep -f freertos-defines.txt | sed -e "s,(,,g" -e "s,),,g" -e "s,uint16_t,,g" -e "s,TickType_t,,g" -e "s,size_t,,g" -e "s,[ ][ ]*, ,g" -e "s,[ ][ ]*$,,g" -e "s,#define ,{\$define,g" -e "s,$,},g" -e "s, , := ,g" -e "s,{\$define,{\$define ,g" -e "s,_STACK_,__STACK_,g" >source/FreeRTOSConfig-armv6m.inc
 echo "{\$define tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE := 1}" >>source/FreeRTOSConfig-armv6m.inc
 arm-none-eabi-gcc "$FREERTOSDIR/portable/MemMang/heap_4.c"    $FLAGS -o lib/armv6m/heap_4.o
@@ -59,7 +60,7 @@ echo '#define INCLUDE_xTaskGetIdleTaskHandle 1' >>FreeRTOSConfig.h
 echo '#define INCLUDE_pxTaskGetStackStart 1' >>FreeRTOSConfig.h
 
 FLAGS="-mcpu=cortex-m3     -mfloat-abi=soft                   -mthumb -std=gnu11 -g3 -DDEBUG -c \
-       -I. -I$SYSVIEWDIR -I$FREERTOSDIR/include -O2 -I$FREERTOSDIR/portable/GCC/ARM_CM3  -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
+       -I. -I$SYSVIEWDIR -I$FREERTOSDIR/include -O0 -I$FREERTOSDIR/portable/GCC/ARM_CM3  -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
 
 arm-none-eabi-gcc "$FREERTOSDIR/tasks.c" $FLAGS -E | grep -f freertos-defines.txt | sed -e "s,(,,g" -e "s,),,g" -e "s,uint16_t,,g" -e "s,TickType_t,,g" -e "s,size_t,,g" -e "s,[ ][ ]*, ,g" -e "s,[ ][ ]*$,,g" -e "s,#define ,{\$define,g" -e "s,$,},g" -e "s, , := ,g" -e "s,{\$define,{\$define ,g" -e "s,_STACK_,__STACK_,g" >source/FreeRTOSConfig-armv7m.inc
 echo "{\$define tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE := 1}" >>source/FreeRTOSConfig-armv7m.inc
@@ -86,7 +87,7 @@ echo '#define INCLUDE_xTaskGetIdleTaskHandle 1' >>FreeRTOSConfig.h
 echo '#define INCLUDE_pxTaskGetStackStart 1' >>FreeRTOSConfig.h
 
 FLAGS="-mcpu=cortex-m4     -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -std=gnu11 -g3 -DDEBUG -c \
-       -I. -I$SYSVIEWDIR -I$FREERTOSDIR/include -O2 -I$FREERTOSDIR/portable/GCC/ARM_CM4F -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
+       -I. -I$SYSVIEWDIR -I$FREERTOSDIR/include -O0 -I$FREERTOSDIR/portable/GCC/ARM_CM4F -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
 arm-none-eabi-gcc "$FREERTOSDIR/tasks.c" $FLAGS -E | grep -f freertos-defines.txt | sed -e "s,(,,g" -e "s,),,g" -e "s,uint16_t,,g" -e "s,TickType_t,,g" -e "s,size_t,,g" -e "s,[ ][ ]*, ,g" -e "s,[ ][ ]*$,,g" -e "s,#define ,{\$define,g" -e "s,$,},g" -e "s, , := ,g" -e "s,{\$define,{\$define ,g" -e "s,_STACK_,__STACK_,g" >source/FreeRTOSConfig-armv7em.inc
 echo "{\$define tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE := 1}" >>source/FreeRTOSConfig-armv7em.inc
 
@@ -130,7 +131,9 @@ fi
 
 rm -f FreeRTOSConfig.h
 rm -f tasks.d
-rm -rf FreeRTOS-Kernel-patched
+
+rm -rf FreeRTOS-Kernel
+mv FreeRTOS-Kernel-saved FreeRTOS-Kernel
 for dir in armv6m armv7m armv7em ; do
   rm -f lib/$dir/*.d 2>/dev/null
   rm -f lib/$dir/*.o 2>/dev/null
