@@ -1,8 +1,10 @@
 {$OPTIMIZATION ON}
 unit FreeRTOS;
 interface
-uses
-  Segger.SysView;
+  {$if defined(USE_SYSVIEW)}
+    uses
+      Segger.SysView;
+  {$endif}
 {$I FreeRTOS.config.inc}
 {$define INTERFACE}
 {$INCLUDE FreeRTOS.Port.pas}
