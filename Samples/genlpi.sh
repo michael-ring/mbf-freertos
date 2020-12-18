@@ -56,8 +56,12 @@ cat devicelist | grep -v "^#" | while read BOARD_OR_CPU SUBARCH DEVICE DEVICESVD
   fi
 
   BINUTILS_PATH=$ARCH-embedded-
-  if [ "$SUBARCH" == "lx6" ]; then
+  if [ "$ARCH" == "xtensa" ]; then
     BINUTILS_PATH=xtensa-esp32-elf-
+  fi
+
+  if [ "$ARCH" == "arm" ]; then
+    BINUTILS_PATH=arm-none-eabi-
   fi
 
   if [ -n "$DEVICESVD" ]; then

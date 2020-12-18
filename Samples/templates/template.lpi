@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <General>
+      <UseAppBundle Value="False"/>
+    </General>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
+    <Units Count="1">
+      <Unit0>
+        <Filename Value="%%APPNAME%%.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <Loaded Value="True"/>
+      </Unit0>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <Target>
+      <Filename Value="%%APPNAME%%"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="../../source;$(ProjOutDir)"/>
+      <OtherUnitFiles Value="../../source"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      <Libraries Value="../../lib/%%SUBARCH%%"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <!--HeapSize Value="%%HEAPSIZE%%"/-->
+      <!--StackSize Value="%%STACKSIZE%%"/-->
+      <TargetProcessor Value="%%SUBARCH%%"/>
+      <TargetCPU Value="%%ARCH%%"/>
+      <TargetOS Value="freertos"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsDwarf2"/>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+    </Linking>
+    <Other>
+      <Verbosity>
+        <ShowExecInfo Value="True"/>
+      </Verbosity>
+      <CustomOptions Value="
+-Wp%%BOARD_OR_CPU%%
+-d%%BOARD_OR_CPU%%
+-godwarfsets
+-godwarfcpp
+-XP%%BINUTILS_PATH%%
+%%EXTRACUSTOMOPTION1%%
+%%EXTRACUSTOMOPTION2%%
+%%EXTRACUSTOMOPTION3%%
+      "/>
+    </Other>
+  </CompilerOptions>
+</CONFIG>
