@@ -1735,6 +1735,7 @@
 {$endif}
 {$if defined(STM32F401) or defined(STM32F405_415) or defined(STM32F407_417) or defined(STM32F410) or defined(STM32F411) or defined(STM32F412) or defined(STM32F413_423) or defined(STM32F427_437) or defined(STM32F429_439) or defined(STM32F446) or defined(STM32F469_479) }
   {$define CortexM4}
+  {$define __NVIC_PRIO_BITS4}
   {$define __CONTROLLERTYPE__:=STM32F4}
   {$define STM32F4}
   {$define STM32}

@@ -58,8 +58,24 @@ arm-none-eabi-ar rcs lib/armv7m/libfreertos.a lib/armv7m/port.o lib/armv7m/event
 arm-none-eabi-ar rcs lib/armv7m/libfreertos_heap_4.a lib/armv7m/heap_4.o
 arm-none-eabi-ar rcs lib/armv7m/libfreertos_heap_5.a lib/armv7m/heap_5.o
 
-echo "Compiling FreeRTOS for armv7em"
-cp samples/templates/FreeRTOSConfig.h.armv7em FreeRTOSConfig.h
+echo "Compiling FreeRTOS for armv7em nvic_prio_bits_3"
+cp samples/templates/FreeRTOSConfig.h.armv7em.priobits3 FreeRTOSConfig.h
+FLAGS="-mcpu=cortex-m4     -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -std=gnu11 -g3 -DDEBUG -c \
+       -I. -I$FREERTOSDIR/include -O2 -I$FREERTOSDIR/portable/GCC/ARM_CM4F -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
+arm-none-eabi-gcc "$FREERTOSDIR/tasks.c" $FLAGS -E | grep -f freertos-defines.txt | sed -e "s,(,,g" -e "s,),,g" -e "s,uint16_t,,g" -e "s,TickType_t,,g" -e "s,size_t,,g" -e "s,[ ][ ]*, ,g" -e "s,[ ][ ]*$,,g" -e "s,#define ,{\$define,g" -e "s,$,},g" -e "s, , := ,g" -e "s,{\$define,{\$define ,g" -e "s,_STACK_,__STACK_,g" >source/FreeRTOSConfig-armv7em.inc
+echo "{\$define tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE := 1}" >>source/FreeRTOSConfig-armv7em.inc
+
+arm-none-eabi-gcc "$FREERTOSDIR/portable/GCC/ARM_CM4F/port.c" $FLAGS -o lib/armv7em/port.o
+arm-none-eabi-gcc "$FREERTOSDIR/event_groups.c"               $FLAGS -o lib/armv7em/event_groups.o
+arm-none-eabi-gcc "$FREERTOSDIR/list.c"                       $FLAGS -o lib/armv7em/list.o
+arm-none-eabi-gcc "$FREERTOSDIR/queue.c"                      $FLAGS -o lib/armv7em/queue.o
+arm-none-eabi-gcc "$FREERTOSDIR/stream_buffer.c"              $FLAGS -o lib/armv7em/stream_buffer.o
+arm-none-eabi-gcc "$FREERTOSDIR/tasks.c"                      $FLAGS -o lib/armv7em/tasks.o
+arm-none-eabi-gcc "$FREERTOSDIR/timers.c"                     $FLAGS -o lib/armv7em/timers.o
+arm-none-eabi-ar rcs lib/armv7em/libfreertos_priobits3.a lib/armv7em/port.o lib/armv7em/event_groups.o lib/armv7em/list.o lib/armv7em/queue.o lib/armv7em/stream_buffer.o lib/armv7em/tasks.o lib/armv7em/timers.o
+
+echo "Compiling FreeRTOS for armv7em nvic_prio_bits_4"
+cp samples/templates/FreeRTOSConfig.h.armv7em.priobits4 FreeRTOSConfig.h
 FLAGS="-mcpu=cortex-m4     -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -std=gnu11 -g3 -DDEBUG -c \
        -I. -I$FREERTOSDIR/include -O2 -I$FREERTOSDIR/portable/GCC/ARM_CM4F -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP --specs=nano.specs"
 arm-none-eabi-gcc "$FREERTOSDIR/tasks.c" $FLAGS -E | grep -f freertos-defines.txt | sed -e "s,(,,g" -e "s,),,g" -e "s,uint16_t,,g" -e "s,TickType_t,,g" -e "s,size_t,,g" -e "s,[ ][ ]*, ,g" -e "s,[ ][ ]*$,,g" -e "s,#define ,{\$define,g" -e "s,$,},g" -e "s, , := ,g" -e "s,{\$define,{\$define ,g" -e "s,_STACK_,__STACK_,g" >source/FreeRTOSConfig-armv7em.inc
@@ -74,7 +90,7 @@ arm-none-eabi-gcc "$FREERTOSDIR/queue.c"                      $FLAGS -o lib/armv
 arm-none-eabi-gcc "$FREERTOSDIR/stream_buffer.c"              $FLAGS -o lib/armv7em/stream_buffer.o
 arm-none-eabi-gcc "$FREERTOSDIR/tasks.c"                      $FLAGS -o lib/armv7em/tasks.o
 arm-none-eabi-gcc "$FREERTOSDIR/timers.c"                     $FLAGS -o lib/armv7em/timers.o
-arm-none-eabi-ar rcs lib/armv7em/libfreertos.a lib/armv7em/port.o lib/armv7em/event_groups.o lib/armv7em/list.o lib/armv7em/queue.o lib/armv7em/stream_buffer.o lib/armv7em/tasks.o lib/armv7em/timers.o
+arm-none-eabi-ar rcs lib/armv7em/libfreertos_priobits4.a lib/armv7em/port.o lib/armv7em/event_groups.o lib/armv7em/list.o lib/armv7em/queue.o lib/armv7em/stream_buffer.o lib/armv7em/tasks.o lib/armv7em/timers.o
 arm-none-eabi-ar rcs lib/armv7em/libfreertos_heap_4.a lib/armv7em/heap_4.o
 arm-none-eabi-ar rcs lib/armv7em/libfreertos_heap_5.a lib/armv7em/heap_5.o
 

@@ -5,6 +5,7 @@ interface
     uses
       Segger.SysView;
   {$endif}
+{$I MBF.Config.inc}
 {$I FreeRTOS.config.inc}
 {$define INTERFACE}
 {$INCLUDE FreeRTOS.Port.pas}

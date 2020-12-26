@@ -304,7 +304,7 @@
 
   function xTaskNotifyGive(xTaskToNotify: TTaskHandle): TBaseType; inline;
   begin
-    Result := xTaskNotify(xTaskToNotify, 0, eIncrement);
+    Result := xTaskNotify(xTaskToNotify, 0, TeNotifyAction.eIncrement);
   end;
 
   function  xTaskNotify(xTaskToNotify:TTaskHandle; ulValue:uint32; eAction:TeNotifyAction) : TBaseType;

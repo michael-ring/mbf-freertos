@@ -3,13 +3,22 @@
   {$if defined(USE_SYSVIEW)}
     {$LINKLIB libfreertos_sysview,static}
   {$else}
-    {$LINKLIB libfreertos,static}
+    {$if defined(CPUARMV7EM)}   
+      {$if defined(__NVIC_PRIO_BITS3)}
+        {$LINKLIB libfreertos_priobits3,static}
+      {$endif} 
+      {$if defined(__NVIC_PRIO_BITS4)}
+        {$LINKLIB libfreertos_priobits4,static}
+      {$endif}
+    {$else}
+      {$LINKLIB libfreertos,static}
+    {$endif} 
   {$endif}
   {$LINKLIB libc_nano,static}
-  {$DEFINE KERNEL_VERSION_NUMBER := 'V10.3.1'}
+  {$DEFINE KERNEL_VERSION_NUMBER := 'V10.4.2'}
   {$DEFINE KERNEL_VERSION_MAJOR  := 10}
-  {$DEFINE KERNEL_VERSION_MINOR  := 3}
-  {$DEFINE KERNEL_VERSION_BUILD  := 1}
+  {$DEFINE KERNEL_VERSION_MINOR  := 4}
+  {$DEFINE KERNEL_VERSION_BUILD  := 2}
 
   {$if defined(CPUARMV6M)}
     {$I FreeRTOSConfig-armv6m.inc}
