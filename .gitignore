@@ -60,3 +60,4 @@ kconfigs.in
 kconfigs_projbuild.in
 ldgen_libraries
 sdkconfig.h
+.DS_Store
