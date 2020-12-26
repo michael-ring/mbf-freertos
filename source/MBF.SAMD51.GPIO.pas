@@ -157,9 +157,9 @@ end;
 
 function TGPIO.GetPinMode(const Pin: TPinIdentifier): TPinMode;
 begin
-  if getBit(Port.Group[Pin shr 4].PINCFG[Pin and $1f],0) = 0 then
+  if getBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0) = 0 then
   begin
-    if getBit(Port.Group[Pin shr 4].DIR,Pin and $1f) = 0 then
+    if getBit(Port.Group[Pin shr 5].DIR,Pin and $1f) = 0 then
       Result := TPinMode.Input
     else
      Result := TPinMode.Output;
@@ -167,9 +167,9 @@ begin
   else
   begin
     if Pin and %1 = 0 then
-      Result := TPinMode(getNibble(Port.Group[Pin shr 4].PMUX[(Pin and $1f) shr 1],0) or $10)
+      Result := TPinMode(getNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],0) or $10)
     else
-      Result := TPinMode(getNibble(Port.Group[Pin shr 4].PMUX[(Pin and $1f) shr 1],4) or $10);
+      Result := TPinMode(getNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],4) or $10);
   end;
 end;
 
@@ -177,12 +177,12 @@ procedure TGPIO.SetPinMode(const Pin: TPinIdentifier; const Value: TPinMode);
 begin
   case Value of
     TPinMode.Input     : begin
-                           clearBit(Port.Group[Pin shr 4].PINCFG[Pin and $1f],0);
-                           Port.Group[Pin shr 4].DIRCLR := 1 shl (Pin and $1f);
+                           clearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0);
+                           Port.Group[Pin shr 5].DIRCLR := 1 shl (Pin and $1f);
     end;
     TPinMode.Output    : begin
-                           clearBit(Port.Group[Pin shr 4].PINCFG[Pin and $1f],0);
-                           Port.Group[Pin shr 4].DIRSET := 1 shl (Pin and $1f);
+                           clearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0);
+                           Port.Group[Pin shr 5].DIRSET := 1 shl (Pin and $1f);
     end;
 
     TPinMode.Analog    : begin
@@ -195,20 +195,20 @@ end;
 
 function TGPIO.GetPinValue(const Pin: TPinIdentifier): TPinValue;
 begin
-  Result := GetBitValue(Port.Group[Pin shr 4].&IN,Pin and $1f);
+  Result := GetBitValue(Port.Group[Pin shr 5].&IN,Pin and $1f);
 end;
 
 procedure TGPIO.SetPinValue(const Pin: TPinIdentifier; const Value: TPinValue);
 begin
   if Value = 1 then
-    Port.Group[Pin shr 4].OUTSET := 1 shl (Pin and $1f)
+    Port.Group[Pin shr 5].OUTSET := 1 shl (Pin and $1f)
   else
-    Port.Group[Pin shr 4].OUTCLR := 1 shl (Pin and $1f);
+    Port.Group[Pin shr 5].OUTCLR := 1 shl (Pin and $1f);
 end;
 
 function TGPIO.GetPinLevel(const Pin: TPinIdentifier): TPinLevel;
 begin
-  if GetBitValue(Port.Group[Pin shr 4].&IN,Pin and $1f) <> 0 then
+  if GetBitValue(Port.Group[Pin shr 5].&IN,Pin and $1f) <> 0 then
     Result := TPinLevel.High
   else
     Result := TPinLevel.Low;
@@ -217,34 +217,34 @@ end;
 procedure TGPIO.SetPinLevel(const Pin: TPinIdentifier; const Level: TPinLevel);
 begin
   if Level = TPinLevel.High then
-    Port.Group[Pin shr 4].OUTSET := 1 shl (Pin and $1f)
+    Port.Group[Pin shr 5].OUTSET := 1 shl (Pin and $1f)
   else
-    Port.Group[Pin shr 4].OUTCLR := 1 shl (Pin and $1f);
+    Port.Group[Pin shr 5].OUTCLR := 1 shl (Pin and $1f);
 end;
 
 procedure TGPIO.SetPinLevelHigh(const Pin: TPinIdentifier);
 begin
-  Port.Group[Pin shr 4].OUTSET := 1 shl (Pin and $1f);
+  Port.Group[Pin shr 5].OUTSET := 1 shl (Pin and $1f);
 end;
 
 procedure TGPIO.SetPinLevelLow(const Pin: TPinIdentifier);
 begin
-  Port.Group[Pin shr 4].OUTCLR := 1 shl (Pin and $1f);
+  Port.Group[Pin shr 5].OUTCLR := 1 shl (Pin and $1f);
 end;
 
 procedure TGPIO.TogglePinValue(const Pin: TPinIdentifier);
 begin
-  SetBit(Port.Group[Pin shr 4].OUTTGL,Pin and $1f)
+  SetBit(Port.Group[Pin shr 5].OUTTGL,Pin and $1f)
 end;
 
 procedure TGPIO.TogglePinLevel(const Pin: TPinIdentifier);
 begin
-  SetBit(Port.Group[Pin shr 4].OUTTGL,Pin and $1f)
+  SetBit(Port.Group[Pin shr 5].OUTTGL,Pin and $1f)
 end;
 
 function TGPIO.GetPinDrive(const Pin: TPinIdentifier): TPinDrive;
 begin
-  if GetBit(Port.Group[Pin shr 4].PINCFG[Pin and $1f],2) = 1 then
+  if GetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2) = 1 then
     Result := TPinDrive.PullUp
   else
     Result := TPinDrive.None;
@@ -253,8 +253,8 @@ end;
 procedure TGPIO.SetPinDrive(const Pin: TPinIdentifier; const Value: TPinDrive);
 begin
   case Value of
-    TPinDrive.None :     ClearBit(Port.Group[Pin shr 4].PINCFG[Pin and $1f],2);
-    TPinDrive.PullUp :   SetBit(Port.Group[Pin shr 4].PINCFG[Pin and $1f],2);
+    TPinDrive.None :     ClearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
+    TPinDrive.PullUp :   SetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
   end;
 end;
 
