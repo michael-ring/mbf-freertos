@@ -22,15 +22,15 @@ For build on Windows please refer to the build instruction here:
 
 https://github.com/libopencm3/libopencm3
 
-You will also need to build arm-freertos target for freepascal.
+You will also need to build arm-freertos target for freepascal. Until all patches show up in trunk of fpc you MUST use my fork of freertos.
 
 On Linux/MacOS build can be done this way:
 
-    git clone https://github.com/graemeg/freepascal.git
+    git clone https://github.com/michael-ring/freepascal
 
 or
 
-    git clone git@github.com:graemeg/freepascal.git
+    git clone git@github.com:michael-ring/freepascal.git
 
 to install arm-freertos target side-by side in a fpcupdeluxe installation do the following steps:
 
