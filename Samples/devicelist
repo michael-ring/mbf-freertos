@@ -2,5 +2,6 @@
 nucleog071rb 	armv6m 		stm32g071rb		STM32G071.svd
 #nucleof103rb 	armv7m 		stm32f103rb		STM32F103.svd
 nucleof401re 	armv7em		stm32f401re		STM32F401.svd
+metro_m0        armv6m          atsamd21g18a            ATSAMD21E18A.svd
 metro_m4        armv7em         atsamd51j19a            ATSAMD51J19A.svd
 #bpiuno32        lx6             esp32

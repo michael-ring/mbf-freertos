@@ -21,6 +21,9 @@ cat devicelist | grep -v "^#" | while read BOARD_OR_CPU SUBARCH DEVICE DEVICESVD
   ARCH=
   ARCHSVD=
   BINUTILS_PATH=
+  EXTRACUSTOMOPTION1=
+  EXTRACUSTOMOPTION2=
+  EXTRACUSTOMOPTION3=
 
   if [ "$SUBARCH" = armv6m ]; then
     ARCH=arm
