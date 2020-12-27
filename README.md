@@ -22,7 +22,7 @@ For build on Windows please refer to the build instruction here:
 
 https://github.com/libopencm3/libopencm3
 
-You will also need to build arm-freertos target for freepascal. Until all patches show up in trunk of fpc you MUST use my fork of freertos.
+You will also need to build arm-freertos target for freepascal. Until all patches show up in trunk of fpc you MUST use my fork of freepascal.
 
 On Linux/MacOS build can be done this way:
 
