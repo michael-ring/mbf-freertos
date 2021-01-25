@@ -149,7 +149,6 @@ var
 implementation
 
 uses
-  cortexm4,
   FreeRTOS,
   MBF.BitHelpers;
 

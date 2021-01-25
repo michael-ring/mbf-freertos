@@ -83,7 +83,7 @@ type
   end;
 
   {$if defined(has_arduinopins)}
-    {$if defined(metro_m4) }
+    {$if defined(fpc_mcu_metro_m4) }
       type
         TArduinoPin = record
       const

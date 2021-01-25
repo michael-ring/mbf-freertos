@@ -49,7 +49,7 @@ type
   public
     procedure Initialize;
     //function GetSYSCLKFrequency: longWord;
-    procedure SetCPUFrequency(const Value: longWord; aClockType : TClockType = TClockType.OSC48M);
+    procedure SetCPUFrequency(const Value: longWord; aClockType : TClockType = TClockType.DFLL48M);
     function GetCPUFrequency: longWord;
     function GetMaxCPUFrequency : longWord;
   end;
@@ -90,13 +90,9 @@ begin
 
 end;
 
-procedure TSAMD51SystemCore.SetCPUFrequency(const Value: longWord; aClockType : TClockType = TClockType.OSC48M);
+procedure TSAMD51SystemCore.SetCPUFrequency(const Value: longWord; aClockType : TClockType = TClockType.DFLL48M);
 begin
   //SetCPUFrequency(getFrequencyParameters(Value,aClockType),aClockType);
-end;
-
-procedure TSAMD51SystemCore.SetCPUFrequency(const Params: TOscParameters; aClockType : TClockType = TClockType.OSC48M);
-begin
 end;
 
 //function TSAMD51SystemCore.GetSysClockFrequency : longWord;

@@ -63,7 +63,7 @@ type
   end;
 
   {$if defined(has_arduinopins)}
-    {$if defined(metro_m0) }
+    {$if defined(fpc_mcu_metro_m0) }
       type
         TArduinoPin = record
       const
@@ -176,9 +176,9 @@ begin
     else
                          begin
                            if Pin and %1 = 0 then
-                             SetNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],Value and %1111,0)
+                             SetNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],longWord(Value) and %1111,0)
                            else 
-                             SetNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],Value and %1111,4);
+                             SetNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],longWord(Value) and %1111,4);
                            SetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0);
     end;
   end;
