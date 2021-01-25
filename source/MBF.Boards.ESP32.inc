@@ -18,11 +18,11 @@
 
 // first, convert user friendly controller names to the real controller used in the design
 
-{$if defined(nodemcuesp32) }
+{$if defined(fpc_mcu_nodemcuesp32) }
   {$define ESP32}
 {$endif}
 
-{$if defined(bpiuno32) }
+{$if defined(fpc_mcu_bpiuno32) }
   {$define ESP32}
   {$define has_arduinopins}
 {$endif}

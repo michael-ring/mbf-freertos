@@ -48,7 +48,6 @@
       </Verbosity>
       <CustomOptions Value="
 -Wp%%BOARD_OR_CPU%%
--d%%BOARD_OR_CPU%%
 -godwarfsets
 -godwarfcpp
 -XP%%BINUTILS_PATH%%

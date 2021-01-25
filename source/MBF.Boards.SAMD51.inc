@@ -18,21 +18,21 @@
 
 // first, convert user friendly controller names to the real controller used in the design
 
-{$if defined(wio_terminal) }
+{$if defined(fpc_mcu_wio_terminal) }
   {$define samd51p19a}
 {$endif}
 
-{$if defined(feather_m4) }
+{$if defined(fpc_mcu_feather_m4) }
   {$define has_featherpins}
   {$define samd51j19a}
 {$endif}
 
-{$if defined(itsybitsy_m4) }
+{$if defined(fpc_mcu_itsybitsy_m4) }
   {$define has_featherpins}
   {$define samd51g19a}
 {$endif}
 
-{$if defined(metro_m4) }
+{$if defined(fpc_mcu_metro_m4) }
   {$define has_arduinopins}
   {$define samd51g19a}
 {$endif}
