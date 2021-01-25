@@ -30,12 +30,6 @@ const
   MuxF=$1400;
   MuxG=$1600;
   MuxH=$1700;
-  MuxI=$1800;
-  MuxJ=$1900;
-  MuxK=$1A00;
-  MuxL=$1B00;
-  MuxM=$1C00;
-  MuxN=$1D00;
 
   Pad0=$100000;
   Pad1=$110000;
@@ -45,7 +39,7 @@ const
 type
   TPinLevel=(Low=0,High=1);
   TPinValue=0..1;
-  TPinIdentifier=-1..160;
+  TPinIdentifier=-1..63;
   TPinMode = (Input=%00, Output=%01, Analog=%11, AF0=$10, AF1, AF2, AF3, AF4, AF5, AF6, AF7, AF8, AF9, AF10, AF11, AF12, AF13);
   TPinDrive = (None=%00,PullUp=%01,PullDown=%10);
   TPinOutputMode = (PushPull=0,OpenDrain=1);
@@ -66,20 +60,6 @@ type
                               PB16=48;  PB17=49;  PB18=50;  PB19=51;  PB20=52;  PB21=53;  PB22=54;  PB23=55;
                               PB24=56;  PB25=57;  PB26=58;  PB27=59;  PB28=60;  PB29=61;  PB30=62;  PB31=63; {$endif}
 
-    {$if defined (has_gpioc)} PC0 =64;  PC1 =65;  PC2 =66;  PC3 =67;  PC4 =68;  PC5 =69;  PC6 =70;  PC7 =71;
-                              PC8 =72;  PC9 =73;  PC10=74;  PC11=75;  PC12=76;  PC13=77;  PC14=78;  PC15=79;
-                              PC16=80;  PC17=81;  PC18=82;  PC19=83;  PC20=84;  PC21=85;  PC22=86;  PC23=87;
-                              PC24=88;  PC25=89;  PC26=90;  PC27=91;  PC28=92;  PC29=93;  PC30=94;  PC31=95; {$endif}
-
-    {$if defined (has_gpiod)} PD0 =96;  PD1 =97;  PD2 =98;  PD3 =99;  PD4 =100; PD5 =101; PD6 =102; PD7 =103;
-                              PD8 =104; PD9 =105; PD10=106; PD11=107; PD12=108; PD13=109; PD14=110; PD15=111;
-                              PD16=112; PD17=113; PD18=114; PD19=115; PD20=116; PD21=117; PD22=118; PD23=119;
-                              PD24=120; PD25=121; PD26=122; PD27=123; PD28=124; PD29=125; PD30=126; PD31=127; {$endif}
-
-    {$if defined (has_gpioe)} PE0 =128; PE1 =129; PE2 =130; PE3 =131; PE4 =132; PE5 =133; PE6 =134; PE7 =135;
-                              PE8 =136; PE9 =137; PE10=138; PE11=139; PE12=140; PE13=141; PE14=142; PE15=143;
-                              PE16=144; PE17=145; PE18=146; PE19=147; PE20=148; PE21=149; PE22=150; PE23=151;
-                              PE24=152; PE25=153; PE26=154; PE27=155; PE28=156; PE29=157; PE30=158; PE31=159; {$endif}
   end;
 
   {$if defined(has_arduinopins)}
@@ -186,9 +166,20 @@ begin
     end;
 
     TPinMode.Analog    : begin
+                           Port.Group[Pin shr 5].DIRCLR := 1 shl (Pin and $1f);
+                           if Pin and %1 = 0 then
+                             SetNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],%0001,0)
+                           else 
+                             SetNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],%0001,4);
+                           SetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0);
     end
     else
                          begin
+                           if Pin and %1 = 0 then
+                             SetNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],Value and %1111,0)
+                           else 
+                             SetNibble(Port.Group[Pin shr 5].PMUX[(Pin and $1f) shr 1],Value and %1111,4);
+                           SetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0);
     end;
   end;
 end;

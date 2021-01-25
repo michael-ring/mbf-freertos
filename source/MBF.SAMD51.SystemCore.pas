@@ -29,17 +29,17 @@ interface
 const
   OSC48MFrequency= 48000000;
   MaxCPUFrequency=120000000;
+  GENERIC_CLOCK_GENERATOR_48M=1;
+  GENERIC_CLOCK_GENERATOR_100M=2;
+  GENERIC_CLOCK_GENERATOR_XOSC32K=3;
+  GENERIC_CLOCK_GENERATOR_12M=4;
+
 {$else}
   {$error Unknown Chip series, please define maximum CPU Frequency}
 {$endif}
 
 type
-  TClockType = (OSC48M);
-
-type
-  TOSCParameters = record
-    FREQUENCY : longWord;
-  end;
+  TClockType = (DFLL48M,DFLL48M_XOSC32,FDPLL200M,XOSC);
 
 type
   TSAMD51SystemCore = record helper for TSystemCore
@@ -50,9 +50,8 @@ type
     procedure Initialize;
     //function GetSYSCLKFrequency: longWord;
     procedure SetCPUFrequency(const Value: longWord; aClockType : TClockType = TClockType.OSC48M);
-    procedure SetCPUFrequency(const Params: TOscParameters; aClockType : TClockType = TClockType.OSC48M);
     function GetCPUFrequency: longWord;
-    function getMaxCPUFrequency : longWord;
+    function GetMaxCPUFrequency : longWord;
   end;
 
 var
@@ -87,6 +86,8 @@ end;
 
 procedure TSAMD51SystemCore.ConfigureSystem;
 begin
+    // Preset clocks similar to Arduino
+
 end;
 
 procedure TSAMD51SystemCore.SetCPUFrequency(const Value: longWord; aClockType : TClockType = TClockType.OSC48M);

@@ -29,10 +29,10 @@ interface
 const
   OSC8MFrequency=8000000;
   MaxCPUFrequency=48000000;
-  GENERIC_CLOCK_GENERATOR_XOSC32K=1;
-  GENERIC_CLOCK_GENERATOR_OSCULP32K=2;
-  GENERIC_CLOCK_GENERATOR_OSC8M=3;
-  GENERIC_CLOCK_GENERATOR_OSC48M=4;
+  //GENERIC_CLOCK_GENERATOR_XOSC32K=1;
+  //GENERIC_CLOCK_GENERATOR_OSCULP32K=2;
+  //GENERIC_CLOCK_GENERATOR_OSC8M=3;
+  //GENERIC_CLOCK_GENERATOR_OSC48M=4;
 
 {$else}
   {$error Unknown Chip series, please define maximum CPU Frequency}
@@ -40,18 +40,70 @@ const
 
 type
   TClockType = (OSC8M,DFLL48M,DFLL48M_XOSC32,FDPLL96M_OSC32K,FDPLL96M_XOSC32);
+  TClockSource = (
+                   GCLKGEN0=0,GCLK_CORE=0,
+                   GCLKGEN1=1,GCLK_XOSC32K=1,
+                   GCLKGEN2=2,GCLK_OSCULP32K=2,
+                   GCLKGEN3=3,GCLK_OSC8M=3,
+                   GCLKGEN4=4,GCLK_OSC48M=4,
+                   GCLKGEN5=5,
+                   GCLKGEN6,
+                   GCLKGEN7,
+                   GCLKGEN8
+                 );
+  TClockTarget = (
+    GCLK_DFLL48M_REF=0,
+    GCLK_DPLL,
+    GCLK_DPLL_32K,
+    GCLK_WDT,
+    GCLK_RTC,
+    GCLK_EIC,
+    GCLK_USB,
+    GCLK_EVSYS_CHANNEL_0,
+    GCLK_EVSYS_CHANNEL_1,
+    GCLK_EVSYS_CHANNEL_2,
+    GCLK_EVSYS_CHANNEL_3,
+    GCLK_EVSYS_CHANNEL_4,
+    GCLK_EVSYS_CHANNEL_5,
+    GCLK_EVSYS_CHANNEL_6,
+    GCLK_EVSYS_CHANNEL_7,
+    GCLK_EVSYS_CHANNEL_8,
+    GCLK_EVSYS_CHANNEL_9,
+    GCLK_EVSYS_CHANNEL_10,
+    GCLK_EVSYS_CHANNEL_11,
+    GCLK_SERCOMx_SLOW,
+    GCLK_SERCOM0_CORE,
+    GCLK_SERCOM1_CORE,
+    GCLK_SERCOM2_CORE,
+    GCLK_SERCOM3_CORE,
+    GCLK_SERCOM4_CORE,
+    GCLK_SERCOM5_CORE,
+    GCLK_TCC0_TCC1,
+    GCLK_TCC2_TC3,
+    GCLK_TC4_TC5,
+    GCLK_TC6_TC7,
+    GCLK_ADC,
+    GCLK_AC_DIG_AC1_DIG,
+    GCLK_AC_ANA_AC1_ANA,
+    GCLK_DAC,
+    GCLK_PTC,
+    GCLK_I2S_0,
+    GCLK_I2S_1,
+    GCLK_TCC3
+  );
 
 type
   TSAMD21SystemCore = record helper for TSystemCore
   private
     procedure ConfigureSystem;
     function GetSysTickClockFrequency : longWord;
-    procedure StartandMapOSC32K(TargetID : byte);
-    procedure StartandMapXOSC32(TargetID : byte);
-    procedure StartandMapOSC8M(TargetID : byte);
-    procedure StartandMapDFLL48M(TargetID : byte);
+    procedure StartandMapOSC32K(aClockSource : TClockSource);
+    procedure StartandMapXOSC32(aClockSource : TClockSource);
+    procedure StartandMapOSC8M(aClockSource : TClockSource);
+    procedure StartandMapDFLL48M(aClockSource : TClockSource);
   public
     procedure Initialize;
+    procedure SetClockSourceTarget(aClockSource : TClockSource; aClockTarget:TClockTarget);
     //function GetSYSCLKFrequency: longWord;
     procedure SetCPUFrequency(Value: longWord; aClockType : TClockType = TClockType.DFLL48M);
     function GetCPUFrequency: longWord;
@@ -92,18 +144,24 @@ procedure TSAMD21SystemCore.ConfigureSystem;
 begin
   // Preset clocks similar to Arduino
   // Set 8MHz Clock Speed
-  StartAndMapOSC8M(0);
+  StartAndMapOSC8M(TClockSource.GCLK_CORE);
   // Set Generic Clock 1 to 32kHz
-  StartAndMapOSC32K(GENERIC_CLOCK_GENERATOR_XOSC32K);
+  StartAndMapOSC32K(TClockSource.GCLK_XOSC32K);
   // Set Generic Clock 2 to ulp 32kHz
   //StartandMapOSCULP32K(GENERIC_CLOCK_GENERATOR_OSCULP32K);
   // Set Generic clock 3 to 8MHz
-  StartAndMapOSC8M(GENERIC_CLOCK_GENERATOR_OSC8M);
+  StartAndMapOSC8M(TClockSource.GCLK_OSC8M);
   // Set Generic clock 4 to 48MHz
-  StartAndMapDFLL48M(GENERIC_CLOCK_GENERATOR_OSC48M);
+  StartAndMapDFLL48M(TClockSource.GCLK_OSC48M);
 end;
 
-procedure TSAMD21SystemCore.StartandMapOSC32K(TargetID : byte);
+procedure TSAMD21SystemCore.SetClockSourceTarget(aClockSource : TClockSource; aClockTarget:TClockTarget);
+begin
+  GCLK.CLKCTRL:= 1 shl 14 + longWord(aClockSource) shl 8 + longWord(aClocktarget);
+  WaitBitIsCleared(GCLK.STATUS,7);
+end;
+
+procedure TSAMD21SystemCore.StartandMapOSC32K(aClockSource : TClockSource);
 begin
   //WRTLOCK = 0,     /* OSC32K configuration is not locked */
   //STARTUP = 0x2,   /* 3 cycle start-up time */
@@ -123,7 +181,7 @@ begin
   WaitBitIsSet(SYSCTRL.PCLKSR,2);
 
   // Set the Generic Clock Generator output divider to 1
-  GCLK.GENDIV := 1 shl 8 + TargetID;
+  GCLK.GENDIV := 1 shl 8 + longWord(aClockSource);
   // RUNSTDBY = 0, /* Generic Clock Generator is stopped in stdby */
   // DIVSEL =  0,  /* Use GENDIV.DIV value to divide the generator */
   // OE = 0,       /* Disable generator output to GCLK_IO[1] */
@@ -132,11 +190,11 @@ begin
   // GENEN = 1,    /* Enable the generator */
   // SRC = 0x04,   /* Generator source: OSC32K output */
   // ID = GENERIC_CLOCK_GENERATOR_OSC32K     /* Generator ID: 1 */
-  GCLK.GENCTRL := 1 shl 17 + 1 shl 16 + 5 shl 8 + TargetID;  
+  GCLK.GENCTRL := 1 shl 17 + 1 shl 16 + 5 shl 8 + longWord(aClockSource);  
   WaitBitIsCleared(GCLK.STATUS,7);
 end;
 
-procedure TSAMD21SystemCore.StartandMapXOSC32(TargetID : byte);
+procedure TSAMD21SystemCore.StartandMapXOSC32(aClockSource : TClockSource);
 begin
   //WRTLOCK = 0,     /* XOSC32K configuration is not locked */
   //STARTUP = 0x2,   /* 3 cycle start-up time */
@@ -151,7 +209,7 @@ begin
   //Wait until Clock is stable
   WaitBitIsSet(SYSCTRL.PCLKSR,1);
   // Set the Generic Clock Generator output divider to 1
-  GCLK.GENDIV := 1 shl 8 + TargetID;
+  GCLK.GENDIV := 1 shl 8 + longWord(aClockSource);
   // RUNSTDBY = 0, /* Generic Clock Generator is stopped in stdby */
   // DIVSEL =  0,  /* Use GENDIV.DIV value to divide the generator */
   // OE = 0,       /* Disable generator output to GCLK_IO[1] */
@@ -160,11 +218,11 @@ begin
   // GENEN = 1,    /* Enable the generator */
   // SRC = 0x05,   /* Generator source: XOSC32K output */
   // ID = GENERIC_CLOCK_GENERATOR_XOSC32K     /* Generator ID: 1 */
-  GCLK.GENCTRL := 1 shl 17 + 1 shl 16 + 5 shl 8 + TargetID;  
+  GCLK.GENCTRL := 1 shl 17 + 1 shl 16 + 5 shl 8 + longWord(aClockSource);  
   WaitBitIsCleared(GCLK.STATUS,7);
 end;
 
-procedure TSAMD21SystemCore.StartandMapOSC8M(TargetID : byte);
+procedure TSAMD21SystemCore.StartandMapOSC8M(aClockSource : TClockSource);
 begin
   //Set Prescaler to 1
   SetCrumb(SYSCTRL.OSC8M,0,8);
@@ -181,7 +239,7 @@ begin
   // Set the Generic Clock Generator output divider to 1
   // DIV = 1,               /* Set output division factor = 1 */
   // ID = GENERIC_CLOCK_GENERATOR_OSC8M   /* Apply division factor to Generator 3 */
-  GCLK.GENDIV := 1 shl 16 + TargetID;
+  GCLK.GENDIV := 1 shl 16 + longWord(aClockSource);
   
   // Configure Generic Clock Generator with OSC8M as source
   // RUNSTDBY = 0, /* Generic Clock Generator is stopped in stdby */
@@ -192,13 +250,13 @@ begin
   // GENEN = 1,    /* Enable the generator */
   // SRC = 0x06,   /* Generator source: OSC8M output */
   // ID = GENERIC_CLOCK_GENERATOR_OSC8M     /* Generator ID: 3 */
-  GCLK.GENCTRL := 1 shl 17 + 1 shl 16 + 6 shl 8 + TargetID;
+  GCLK.GENCTRL := 1 shl 17 + 1 shl 16 + 6 shl 8 + longWord(aClockSource);
 
   // GENCTRL is Write-Synchronized...so wait for write to complete
   WaitBitIsCleared(GCLK.STATUS,7);
 end;
 
-procedure TSAMD21SystemCore.StartandMapDFLL48M(TargetID : byte);
+procedure TSAMD21SystemCore.StartandMapDFLL48M(aClockSource : TClockSource);
 begin
   // Start OSC
   SYSCTRL.DFLLCTRL := 1 shl 1;
@@ -209,7 +267,7 @@ begin
   // Set the Generic Clock Generator output divider to 1
   // DIV = 1,               /* Set output division factor = 1 */
   // ID = GENERIC_CLOCK_GENERATOR_OSC8M   /* Apply division factor to Generator 3 */
-  GCLK.GENDIV := 1 shl 16 + TargetID;
+  GCLK.GENDIV := 1 shl 16 + longWord(aClockSource);
   
   // Switch Generic Clock Generator 0 to DFLL48M. CPU will run at 48MHz.
   // RUNSTDBY = 0,    /* Generic Clock Generator is stopped in stdby */
@@ -220,7 +278,7 @@ begin
   // GENEN = 1,     /* Enable the generator */
   // SRC = 0x07,    /* Generator source: DFLL48M output */
   // ID = GENERIC_CLOCK_GENERATOR_MAIN      /* Generator ID: 0 */
-  GCLK.GENCTRL := 1 shl 17 + 1 shl 16 + 7 shl 8 + TargetID;
+  GCLK.GENCTRL := 1 shl 17 + 1 shl 16 + 7 shl 8 + longWord(aClockSource);
 
   // Wait for synchronization
   WaitBitIsCleared(GCLK.STATUS,7);
@@ -228,7 +286,7 @@ end;
 
 procedure TSAMD21SystemCore.SetCPUFrequency(Value: longWord; aClockType : TClockType = TClockType.DFLL48M);
 var
-  i : integer;
+  i : word;
   DIVFACTOR,TARGETRATIO : word;
 begin
   //Set Waitstates for worst Case
@@ -237,21 +295,22 @@ begin
   case aClockType of
     TClockType.OSC8M: begin
                       Value := 8000000;
-                      StartandMapOSC8M(0);
+                      StartandMapOSC8M(TClockSource.GCLK_CORE);
                     end;
     TClockType.DFLL48M: begin
                       Value := 48000000;
-                      StartandMapDFLL48M(0);
+                      StartandMapDFLL48M(TClockSource.GCLK_CORE);
                     end;
     TClockType.DFLL48M_XOSC32: begin
                       Value := 48000000;
-                      StartAndMapXOSC32(GENERIC_CLOCK_GENERATOR_XOSC32K);
+                      StartAndMapXOSC32(TClockSource.GCLK_XOSC32K);
                       //Put Generic Clock Generator 1 as source for Generic Clock Multiplexer 0 (DFLL48M reference)
                       // WRTLOCK = 0,   /* Generic Clock is not locked from subsequent writes */
                       // CLKEN = 1,     /* Enable the Generic Clock */
                       // GEN = GENERIC_CLOCK_GENERATOR_XOSC32K,   /* Generic Clock Generator 1 is the source */
                       // ID = 0x00      /* Generic Clock Multiplexer 0 (DFLL48M Reference) */
-                      GCLK.CLKCTRL := 1 shl 14 + 1 shl 8 + 0;
+                      //GCLK.CLKCTRL := 1 shl 14 + 1 shl 8 + 0;
+                      SetClockSourceTarget(TClockSource.GCLKGEN1,TClockTarget.GCLK_DFLL48M_REF);
 
                       // Enable the DFLL48M in open loop mode.
                       WaitBitIsSet(SYSCTRL.PCLKSR,4);
@@ -288,17 +347,16 @@ begin
     TClockType.FDPLL96M_OSC32K,
     TClockType.FDPLL96M_XOSC32: begin
                       if aClockType = TClockType.FDPLL96M_OSC32K then
-                        StartAndMapOSC32K(GENERIC_CLOCK_GENERATOR_XOSC32K)
+                        StartAndMapOSC32K(TClockSource.GCLK_XOSC32K)
                       else
-                        StartAndMapXOSC32(GENERIC_CLOCK_GENERATOR_XOSC32K);
+                        StartAndMapXOSC32(TClockSource.GCLK_XOSC32K);
 
                       // Put Generic Clock Generator 1 as source for (FDPLL96M reference)
                       // WRTLOCK = 0,   /* Generic Clock is not locked from subsequent writes */
                       // CLKEN = 1,     /* Enable the Generic Clock */
                       // GEN = GENERIC_CLOCK_GENERATOR_XOSC32K,   /* Generic Clock Generator 1 is the source */
                       // ID = 0x01      /* Generic Clock Multiplexer 1 (FDPLL96M Reference) */
-                      GCLK.CLKCTRL := 1 shl 14 + 1 shl 8 + GENERIC_CLOCK_GENERATOR_XOSC32K;
-                      WaitBitIsCleared(GCLK.STATUS,7);
+                      SetClockSourceTarget(TClockSource.GCLK_XOSC32K,TClockTarget.GCLK_DFLL48M_REF);
 
                       if Value * 256 < 48000000 then
                         Value := 48000000 div 256;
