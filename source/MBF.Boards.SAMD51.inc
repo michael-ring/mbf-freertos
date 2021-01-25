@@ -19,25 +19,25 @@
 // first, convert user friendly controller names to the real controller used in the design
 
 {$if defined(fpc_mcu_wio_terminal) }
-  {$define samd51p19a}
+  {$define fpc_mcu_samd51p19a}
 {$endif}
 
 {$if defined(fpc_mcu_feather_m4) }
   {$define has_featherpins}
-  {$define samd51j19a}
+  {$define fpc_mcu_samd51j19a}
 {$endif}
 
 {$if defined(fpc_mcu_itsybitsy_m4) }
   {$define has_featherpins}
-  {$define samd51g19a}
+  {$define fpc_mcu_samd51g19a}
 {$endif}
 
 {$if defined(fpc_mcu_metro_m4) }
   {$define has_arduinopins}
-  {$define samd51g19a}
+  {$define fpc_mcu_samd51g19a}
 {$endif}
 
-{$if defined(samd51j19a) }
+{$if defined(fpc_mcu_samd51j19a) }
   {$define SAMD51}
   {$define has_gpioa }  {$define has_gpiob }  
   {$define has_usart0 } {$define has_usart1 } {$define has_usart2 } {$define has_usart3 } {$define has_usart4 } {$define has_usart5 } 
@@ -47,7 +47,7 @@
   {$define has_dac }   
   {$define has_rtc }   
 {$endif}
-{$if defined(samd51p19a) }
+{$if defined(fpc_mcu_samd51p19a) }
   {$define SAMD51}
   {$define has_gpioa }  {$define has_gpiob }  {$define has_gpioc }  {$define has_gpiod }  
   {$define has_usart0 } {$define has_usart1 } {$define has_usart2 } {$define has_usart3 } {$define has_usart4 } {$define has_usart5 } {$define has_usart6 } {$define has_usart7 } 
@@ -57,7 +57,7 @@
   {$define has_dac }   
   {$define has_rtc }   
 {$endif}
-{$if defined(samd51g19a) }
+{$if defined(fpc_mcu_samd51g19a) }
   {$define SAMD51}
   {$define has_gpioa }  {$define has_gpiob }  
   {$define has_usart0 } {$define has_usart1 } {$define has_usart2 } {$define has_usart3 } {$define has_usart4 } {$define has_usart5 } 

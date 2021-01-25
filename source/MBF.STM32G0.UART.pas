@@ -26,7 +26,8 @@ interface
 
 uses
   MBF.STM32G0.SystemCore,
-  MBF.STM32G0.GPIO;
+  MBF.STM32G0.GPIO,
+  FreeRTOS;
 
 type
   TUART_Registers = TUSART_Registers;

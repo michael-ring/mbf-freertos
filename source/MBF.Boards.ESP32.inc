@@ -27,7 +27,8 @@
   {$define has_arduinopins}
 {$endif}
 
-{$if defined(ESP32) }
+{$if defined(fpc_mcu_ESP32) }
+  {$define ESP32}
   {$define has_gpioa } {$define has_gpiob } {$define has_gpioc } {$define has_gpioh }
   {$define has_usart1 } {$define has_usart2 }
   {$define has_spi1 }

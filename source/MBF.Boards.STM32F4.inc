@@ -22,94 +22,94 @@
   {$define nucleo}
   {$define has_arduinopins}
   {$define has_morphopins}
-  {$define stm32f401re}
+  {$define fpc_mcu_stm32f401re}
 {$endif}
 
 {$if defined(fpc_mcu_nucleof411re) }
   {$define nucleo}
   {$define has_arduinopins}
   {$define has_morphopins}
-  {$define stm32f411re}
+  {$define fpc_mcu_stm32f411re}
 {$endif}
 
 {$if defined(fpc_mcu_nucleof446re) }
   {$define nucleo}
   {$define has_arduinopins}
   {$define has_morphopins}
-  {$define stm32f446re}
+  {$define fpc_mcu_stm32f446re}
 {$endif}
 
 {$if defined(fpc_mcu_nucleof410rb) }
   {$define nucleo}
   {$define has_arduinopins}
   {$define has_morphopins}
-  {$define stm32f410rb}
+  {$define fpc_mcu_stm32f410rb}
 {$endif}
 
 {$if defined(fpc_mcu_nucleof429zi) }
   {$define nucleo}
   {$define has_arduinopins}
   {$define has_ziopins}
-  {$define stm32f429zi}
+  {$define fpc_mcu_stm32f429zi}
 {$endif}
 
 {$if defined(fpc_mcu_nucleof446ze) }
   {$define nucleo}
   {$define has_arduinopins}
   {$define has_ziopins}
-  {$define stm32f446ze}
+  {$define fpc_mcu_stm32f446ze}
 {$endif}
 
 {$if defined(fpc_mcu_nucleof412zg) }
   {$define nucleo}
   {$define has_arduinopins}
   {$define has_ziopins}
-  {$define stm32f412zg}
+  {$define fpc_mcu_stm32f412zg}
 {$endif}
 
 {$if defined(fpc_mcu_nucleof413zh) }
   {$define nucleo}
   {$define has_arduinopins}
   {$define has_ziopins}
-  {$define stm32f413zh}
+  {$define fpc_mcu_stm32f413zh}
 {$endif}
 
 {$if defined(fpc_mcu_stm32f401cdiscovery) }
   {$define discovery}
-  {$define stm32f401vc}
+  {$define fpc_mcu_stm32f401vc}
 {$endif}
 
 {$if defined(fpc_mcu_stm32f411ediscovery) }
   {$define discovery}
-  {$define stm32f411ve}
+  {$define fpc_mcu_stm32f411ve}
 {$endif}
 
 {$if defined(fpc_mcu_stm32f407gdiscovery) }
   {$define discovery}
-  {$define stm32f407vg}
+  {$define fpc_mcu_stm32f407vg}
 {$endif}
 
 {$if defined(fpc_mcu_stm32f429idiscovery) }
   {$define discovery}
-  {$define stm32f429zi}
+  {$define fpc_mcu_stm32f429zi}
 {$endif}
 
 {$if defined(fpc_mcu_stm32f469idiscovery) }
   {$define discovery}
-  {$define stm32f469ni}
+  {$define fpc_mcu_stm32f469ni}
 {$endif}
 
 {$if defined(fpc_mcu_stm32f412gdiscovery) }
   {$define discovery}
-  {$define stm32f412zg}
+  {$define fpc_mcu_stm32f412zg}
 {$endif}
 
 {$if defined(fpc_mcu_stm32f413hdiscovery) }
   {$define discovery}
-  {$define stm32f413zh}
+  {$define fpc_mcu_stm32f413zh}
 {$endif}
 
-{$if defined(STM32F401CB) or defined(STM32F401CC) }
+{$if defined(FPC_MCU_STM32F401CB) or defined(FPC_MCU_STM32F401CC) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define UFQFPN48 }
@@ -123,7 +123,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401CB) or defined(STM32F401CC) }
+{$if defined(FPC_MCU_STM32F401CB) or defined(FPC_MCU_STM32F401CC) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define WLCSP49 }
@@ -137,7 +137,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401CD) or defined(STM32F401CE) }
+{$if defined(FPC_MCU_STM32F401CD) or defined(FPC_MCU_STM32F401CE) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define UFQFPN48 }
@@ -151,7 +151,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401CD) or defined(STM32F401CE) }
+{$if defined(FPC_MCU_STM32F401CD) or defined(FPC_MCU_STM32F401CE) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define WLCSP49 }
@@ -165,7 +165,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401CC) }
+{$if defined(FPC_MCU_STM32F401CC) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define WLCSP49 }
@@ -179,7 +179,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401RB) or defined(STM32F401RC) }
+{$if defined(FPC_MCU_STM32F401RB) or defined(FPC_MCU_STM32F401RC) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define LQFP64 }
@@ -193,7 +193,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401RD) or defined(STM32F401RE) }
+{$if defined(FPC_MCU_STM32F401RD) or defined(FPC_MCU_STM32F401RE) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define LQFP64 }
@@ -207,7 +207,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401VB) or defined(STM32F401VC) }
+{$if defined(FPC_MCU_STM32F401VB) or defined(FPC_MCU_STM32F401VC) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define UFBGA100 }
@@ -221,7 +221,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401VB) or defined(STM32F401VC) }
+{$if defined(FPC_MCU_STM32F401VB) or defined(FPC_MCU_STM32F401VC) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define LQFP100 }
@@ -235,7 +235,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401VD) or defined(STM32F401VE) }
+{$if defined(FPC_MCU_STM32F401VD) or defined(FPC_MCU_STM32F401VE) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define UFBGA100 }
@@ -249,7 +249,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F401VD) or defined(STM32F401VE) }
+{$if defined(FPC_MCU_STM32F401VD) or defined(FPC_MCU_STM32F401VE) }
   {$define STM32F401 }
   {$define STM32F40xx }
   {$define LQFP100 }
@@ -263,7 +263,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F405OE) or defined(STM32F405OG) }
+{$if defined(FPC_MCU_STM32F405OE) or defined(FPC_MCU_STM32F405OG) }
   {$define STM32F405_415 }
   {$define STM32F40xx }
   {$define WLCSP90 }
@@ -277,7 +277,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F405RG) }
+{$if defined(FPC_MCU_STM32F405RG) }
   {$define STM32F405_415 }
   {$define STM32F40xx }
   {$define LQFP64 }
@@ -291,7 +291,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F405VG) }
+{$if defined(FPC_MCU_STM32F405VG) }
   {$define STM32F405_415 }
   {$define STM32F40xx }
   {$define LQFP100 }
@@ -305,7 +305,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F405ZG) }
+{$if defined(FPC_MCU_STM32F405ZG) }
   {$define STM32F405_415 }
   {$define STM32F40xx }
   {$define LQFP144 }
@@ -319,7 +319,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F407IE) or defined(STM32F407IG) }
+{$if defined(FPC_MCU_STM32F407IE) or defined(FPC_MCU_STM32F407IG) }
   {$define STM32F407_417 }
   {$define STM32F40xx }
   {$define UFBGA176 }
@@ -333,7 +333,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F407IE) or defined(STM32F407IG) }
+{$if defined(FPC_MCU_STM32F407IE) or defined(FPC_MCU_STM32F407IG) }
   {$define STM32F407_417 }
   {$define STM32F40xx }
   {$define LQFP176 }
@@ -347,7 +347,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F407VE) or defined(STM32F407VG) }
+{$if defined(FPC_MCU_STM32F407VE) or defined(FPC_MCU_STM32F407VG) }
   {$define STM32F407_417 }
   {$define STM32F40xx }
   {$define LQFP100 }
@@ -361,7 +361,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F407ZE) or defined(STM32F407ZG) }
+{$if defined(FPC_MCU_STM32F407ZE) or defined(FPC_MCU_STM32F407ZG) }
   {$define STM32F407_417 }
   {$define STM32F40xx }
   {$define LQFP144 }
@@ -375,7 +375,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F410C8) or defined(STM32F410CB) }
+{$if defined(FPC_MCU_STM32F410C8) or defined(FPC_MCU_STM32F410CB) }
   {$define STM32F410 }
   {$define STM32F41xx }
   {$define LQFP48 }
@@ -389,7 +389,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F410C8) or defined(STM32F410CB) }
+{$if defined(FPC_MCU_STM32F410C8) or defined(FPC_MCU_STM32F410CB) }
   {$define STM32F410 }
   {$define STM32F41xx }
   {$define UFQFPN48 }
@@ -403,7 +403,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F410R8) or defined(STM32F410RB) }
+{$if defined(FPC_MCU_STM32F410R8) or defined(FPC_MCU_STM32F410RB) }
   {$define STM32F410 }
   {$define STM32F41xx }
   {$define UFBGA64 }
@@ -417,7 +417,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F410R8) or defined(STM32F410RB) }
+{$if defined(FPC_MCU_STM32F410R8) or defined(FPC_MCU_STM32F410RB) }
   {$define STM32F410 }
   {$define STM32F41xx }
   {$define LQFP64 }
@@ -431,7 +431,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F410T8) or defined(STM32F410TB) }
+{$if defined(FPC_MCU_STM32F410T8) or defined(FPC_MCU_STM32F410TB) }
   {$define STM32F410 }
   {$define STM32F41xx }
   {$define WLCSP36 }
@@ -445,7 +445,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F411CC) or defined(STM32F411CE) }
+{$if defined(FPC_MCU_STM32F411CC) or defined(FPC_MCU_STM32F411CE) }
   {$define STM32F411 }
   {$define STM32F41xx }
   {$define UFQFPN48 }
@@ -459,7 +459,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F411CC) or defined(STM32F411CE) }
+{$if defined(FPC_MCU_STM32F411CC) or defined(FPC_MCU_STM32F411CE) }
   {$define STM32F411 }
   {$define STM32F41xx }
   {$define WLCSP49 }
@@ -473,7 +473,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F411RC) or defined(STM32F411RE) }
+{$if defined(FPC_MCU_STM32F411RC) or defined(FPC_MCU_STM32F411RE) }
   {$define STM32F411 }
   {$define STM32F41xx }
   {$define LQFP64 }
@@ -487,7 +487,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F411VC) or defined(STM32F411VE) }
+{$if defined(FPC_MCU_STM32F411VC) or defined(FPC_MCU_STM32F411VE) }
   {$define STM32F411 }
   {$define STM32F41xx }
   {$define UFBGA100 }
@@ -501,7 +501,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F411VC) or defined(STM32F411VE) }
+{$if defined(FPC_MCU_STM32F411VC) or defined(FPC_MCU_STM32F411VE) }
   {$define STM32F411 }
   {$define STM32F41xx }
   {$define LQFP100 }
@@ -515,7 +515,7 @@
   
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F412CE) or defined(STM32F412CG) }
+{$if defined(FPC_MCU_STM32F412CE) or defined(FPC_MCU_STM32F412CG) }
   {$define STM32F412 }
   {$define STM32F41xx }
   {$define UFQFPN48 }
@@ -529,7 +529,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F412RE) or defined(STM32F412RG) }
+{$if defined(FPC_MCU_STM32F412RE) or defined(FPC_MCU_STM32F412RG) }
   {$define STM32F412 }
   {$define STM32F41xx }
   {$define LQFP64 }
@@ -543,7 +543,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F412RE) or defined(STM32F412RG) }
+{$if defined(FPC_MCU_STM32F412RE) or defined(FPC_MCU_STM32F412RG) }
   {$define STM32F412 }
   {$define STM32F41xx }
   {$define WLCSP64 }
@@ -557,7 +557,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F412REP) or defined(STM32F412RGP) }
+{$if defined(FPC_MCU_STM32F412REP) or defined(FPC_MCU_STM32F412RGP) }
   {$define STM32F412 }
   {$define STM32F41xx }
   {$define WLCSP64 }
@@ -571,7 +571,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F412VE) or defined(STM32F412VG) }
+{$if defined(FPC_MCU_STM32F412VE) or defined(FPC_MCU_STM32F412VG) }
   {$define STM32F412 }
   {$define STM32F41xx }
   {$define UFBGA100 }
@@ -585,7 +585,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F412VE) or defined(STM32F412VG) }
+{$if defined(FPC_MCU_STM32F412VE) or defined(FPC_MCU_STM32F412VG) }
   {$define STM32F412 }
   {$define STM32F41xx }
   {$define LQFP100 }
@@ -599,7 +599,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F412ZE) or defined(STM32F412ZG) }
+{$if defined(FPC_MCU_STM32F412ZE) or defined(FPC_MCU_STM32F412ZG) }
   {$define STM32F412 }
   {$define STM32F41xx }
   {$define UFBGA144 }
@@ -613,7 +613,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F412ZE) or defined(STM32F412ZG) }
+{$if defined(FPC_MCU_STM32F412ZE) or defined(FPC_MCU_STM32F412ZG) }
   {$define STM32F412 }
   {$define STM32F41xx }
   {$define LQFP144 }
@@ -627,7 +627,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F413CG) or defined(STM32F413CH) }
+{$if defined(FPC_MCU_STM32F413CG) or defined(FPC_MCU_STM32F413CH) }
   {$define STM32F413_423 }
   {$define STM32F41xx }
   {$define UFQFPN48 }
@@ -641,7 +641,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F413MG) or defined(STM32F413MH) }
+{$if defined(FPC_MCU_STM32F413MG) or defined(FPC_MCU_STM32F413MH) }
   {$define STM32F413_423 }
   {$define STM32F41xx }
   {$define WLCSP81 }
@@ -655,7 +655,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F413RG) or defined(STM32F413RH) }
+{$if defined(FPC_MCU_STM32F413RG) or defined(FPC_MCU_STM32F413RH) }
   {$define STM32F413_423 }
   {$define STM32F41xx }
   {$define LQFP64 }
@@ -669,7 +669,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F413VG) or defined(STM32F413VH) }
+{$if defined(FPC_MCU_STM32F413VG) or defined(FPC_MCU_STM32F413VH) }
   {$define STM32F413_423 }
   {$define STM32F41xx }
   {$define UFBGA100 }
@@ -683,7 +683,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F413VG) or defined(STM32F413VH) }
+{$if defined(FPC_MCU_STM32F413VG) or defined(FPC_MCU_STM32F413VH) }
   {$define STM32F413_423 }
   {$define STM32F41xx }
   {$define LQFP100 }
@@ -697,7 +697,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F413ZG) or defined(STM32F413ZH) }
+{$if defined(FPC_MCU_STM32F413ZG) or defined(FPC_MCU_STM32F413ZH) }
   {$define STM32F413_423 }
   {$define STM32F41xx }
   {$define UFBGA144 }
@@ -711,7 +711,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F413ZG) or defined(STM32F413ZH) }
+{$if defined(FPC_MCU_STM32F413ZG) or defined(FPC_MCU_STM32F413ZH) }
   {$define STM32F413_423 }
   {$define STM32F41xx }
   {$define LQFP144 }
@@ -725,7 +725,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F415OG) }
+{$if defined(FPC_MCU_STM32F415OG) }
   {$define STM32F405_415 }
   {$define STM32F41xx }
   {$define WLCSP90 }
@@ -739,7 +739,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F415RG) }
+{$if defined(FPC_MCU_STM32F415RG) }
   {$define STM32F405_415 }
   {$define STM32F41xx }
   {$define LQFP64 }
@@ -753,7 +753,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F415VG) }
+{$if defined(FPC_MCU_STM32F415VG) }
   {$define STM32F405_415 }
   {$define STM32F41xx }
   {$define LQFP100 }
@@ -767,7 +767,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F415ZG) }
+{$if defined(FPC_MCU_STM32F415ZG) }
   {$define STM32F405_415 }
   {$define STM32F41xx }
   {$define LQFP144 }
@@ -781,7 +781,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F417IE) or defined(STM32F417IG) }
+{$if defined(FPC_MCU_STM32F417IE) or defined(FPC_MCU_STM32F417IG) }
   {$define STM32F407_417 }
   {$define STM32F41xx }
   {$define UFBGA176 }
@@ -795,7 +795,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F417IE) or defined(STM32F417IG) }
+{$if defined(FPC_MCU_STM32F417IE) or defined(FPC_MCU_STM32F417IG) }
   {$define STM32F407_417 }
   {$define STM32F41xx }
   {$define LQFP176 }
@@ -809,7 +809,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F417VE) or defined(STM32F417VG) }
+{$if defined(FPC_MCU_STM32F417VE) or defined(FPC_MCU_STM32F417VG) }
   {$define STM32F407_417 }
   {$define STM32F41xx }
   {$define LQFP100 }
@@ -823,7 +823,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F417ZE) or defined(STM32F417ZG) }
+{$if defined(FPC_MCU_STM32F417ZE) or defined(FPC_MCU_STM32F417ZG) }
   {$define STM32F407_417 }
   {$define STM32F41xx }
   {$define LQFP144 }
@@ -837,7 +837,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F423CH) }
+{$if defined(FPC_MCU_STM32F423CH) }
   {$define STM32F413_423 }
   {$define STM32F42xx }
   {$define UFQFPN48 }
@@ -851,7 +851,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F423MH) }
+{$if defined(FPC_MCU_STM32F423MH) }
   {$define STM32F413_423 }
   {$define STM32F42xx }
   {$define WLCSP81 }
@@ -865,7 +865,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F423RH) }
+{$if defined(FPC_MCU_STM32F423RH) }
   {$define STM32F413_423 }
   {$define STM32F42xx }
   {$define LQFP64 }
@@ -879,7 +879,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F423VH) }
+{$if defined(FPC_MCU_STM32F423VH) }
   {$define STM32F413_423 }
   {$define STM32F42xx }
   {$define UFBGA100 }
@@ -893,7 +893,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F423VH) }
+{$if defined(FPC_MCU_STM32F423VH) }
   {$define STM32F413_423 }
   {$define STM32F42xx }
   {$define LQFP100 }
@@ -907,7 +907,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F423ZH) }
+{$if defined(FPC_MCU_STM32F423ZH) }
   {$define STM32F413_423 }
   {$define STM32F42xx }
   {$define UFBGA144 }
@@ -921,7 +921,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F423ZH) }
+{$if defined(FPC_MCU_STM32F423ZH) }
   {$define STM32F413_423 }
   {$define STM32F42xx }
   {$define LQFP144 }
@@ -935,7 +935,7 @@
   {$define has_can1 } {$define has_can2 } {$define has_can3 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F427AG) or defined(STM32F427AI) }
+{$if defined(FPC_MCU_STM32F427AG) or defined(FPC_MCU_STM32F427AI) }
   {$define STM32F427_437 }
   {$define STM32F42xx }
   {$define UFBGA169 }
@@ -949,7 +949,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F427IG) or defined(STM32F427II) }
+{$if defined(FPC_MCU_STM32F427IG) or defined(FPC_MCU_STM32F427II) }
   {$define STM32F427_437 }
   {$define STM32F42xx }
   {$define UFBGA176 }
@@ -963,7 +963,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F427IG) or defined(STM32F427II) }
+{$if defined(FPC_MCU_STM32F427IG) or defined(FPC_MCU_STM32F427II) }
   {$define STM32F427_437 }
   {$define STM32F42xx }
   {$define LQFP176 }
@@ -977,7 +977,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F427VG) or defined(STM32F427VI) }
+{$if defined(FPC_MCU_STM32F427VG) or defined(FPC_MCU_STM32F427VI) }
   {$define STM32F427_437 }
   {$define STM32F42xx }
   {$define LQFP100 }
@@ -991,7 +991,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F427ZG) or defined(STM32F427ZI) }
+{$if defined(FPC_MCU_STM32F427ZG) or defined(FPC_MCU_STM32F427ZI) }
   {$define STM32F427_437 }
   {$define STM32F42xx }
   {$define LQFP144 }
@@ -1005,7 +1005,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429AG) or defined(STM32F429AI) }
+{$if defined(FPC_MCU_STM32F429AG) or defined(FPC_MCU_STM32F429AI) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define UFBGA169 }
@@ -1019,7 +1019,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429BE) or defined(STM32F429BG) or defined(STM32F429BI) }
+{$if defined(FPC_MCU_STM32F429BE) or defined(FPC_MCU_STM32F429BG) or defined(FPC_MCU_STM32F429BI) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define LQFP208 }
@@ -1033,7 +1033,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429IE) or defined(STM32F429IG) }
+{$if defined(FPC_MCU_STM32F429IE) or defined(FPC_MCU_STM32F429IG) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define LQFP176 }
@@ -1047,7 +1047,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429IE) or defined(STM32F429IG) or defined(STM32F429II) }
+{$if defined(FPC_MCU_STM32F429IE) or defined(FPC_MCU_STM32F429IG) or defined(FPC_MCU_STM32F429II) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define UFBGA176 }
@@ -1061,7 +1061,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429II) }
+{$if defined(FPC_MCU_STM32F429II) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define LQFP176 }
@@ -1075,7 +1075,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429NE) or defined(STM32F429NG) }
+{$if defined(FPC_MCU_STM32F429NE) or defined(FPC_MCU_STM32F429NG) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define TFBGA216 }
@@ -1089,7 +1089,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429NI) }
+{$if defined(FPC_MCU_STM32F429NI) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define TFBGA216 }
@@ -1103,7 +1103,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429VE) or defined(STM32F429VG) }
+{$if defined(FPC_MCU_STM32F429VE) or defined(FPC_MCU_STM32F429VG) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define LQFP100 }
@@ -1117,7 +1117,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429VI) }
+{$if defined(FPC_MCU_STM32F429VI) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define LQFP100 }
@@ -1131,7 +1131,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429ZE) or defined(STM32F429ZG) }
+{$if defined(FPC_MCU_STM32F429ZE) or defined(FPC_MCU_STM32F429ZG) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define LQFP144 }
@@ -1145,7 +1145,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429ZG) }
+{$if defined(FPC_MCU_STM32F429ZG) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define WLCSP143 }
@@ -1159,7 +1159,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429ZI) }
+{$if defined(FPC_MCU_STM32F429ZI) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define LQFP144 }
@@ -1173,7 +1173,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F429ZI) }
+{$if defined(FPC_MCU_STM32F429ZI) }
   {$define STM32F429_439 }
   {$define STM32F42xx }
   {$define WLCSP143 }
@@ -1187,7 +1187,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F437AI) }
+{$if defined(FPC_MCU_STM32F437AI) }
   {$define STM32F427_437 }
   {$define STM32F43xx }
   {$define UFBGA169 }
@@ -1201,7 +1201,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F437IG) or defined(STM32F437II) }
+{$if defined(FPC_MCU_STM32F437IG) or defined(FPC_MCU_STM32F437II) }
   {$define STM32F427_437 }
   {$define STM32F43xx }
   {$define UFBGA176 }
@@ -1215,7 +1215,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F437IG) or defined(STM32F437II) }
+{$if defined(FPC_MCU_STM32F437IG) or defined(FPC_MCU_STM32F437II) }
   {$define STM32F427_437 }
   {$define STM32F43xx }
   {$define LQFP176 }
@@ -1229,7 +1229,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F437VG) or defined(STM32F437VI) }
+{$if defined(FPC_MCU_STM32F437VG) or defined(FPC_MCU_STM32F437VI) }
   {$define STM32F427_437 }
   {$define STM32F43xx }
   {$define LQFP100 }
@@ -1243,7 +1243,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F437ZG) or defined(STM32F437ZI) }
+{$if defined(FPC_MCU_STM32F437ZG) or defined(FPC_MCU_STM32F437ZI) }
   {$define STM32F427_437 }
   {$define STM32F43xx }
   {$define LQFP144 }
@@ -1257,7 +1257,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F439AI) }
+{$if defined(FPC_MCU_STM32F439AI) }
   {$define STM32F429_439 }
   {$define STM32F43xx }
   {$define UFBGA169 }
@@ -1271,7 +1271,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F439BG) or defined(STM32F439BI) }
+{$if defined(FPC_MCU_STM32F439BG) or defined(FPC_MCU_STM32F439BI) }
   {$define STM32F429_439 }
   {$define STM32F43xx }
   {$define LQFP208 }
@@ -1285,7 +1285,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F439IG) or defined(STM32F439II) }
+{$if defined(FPC_MCU_STM32F439IG) or defined(FPC_MCU_STM32F439II) }
   {$define STM32F429_439 }
   {$define STM32F43xx }
   {$define UFBGA176 }
@@ -1299,7 +1299,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F439IG) or defined(STM32F439II) }
+{$if defined(FPC_MCU_STM32F439IG) or defined(FPC_MCU_STM32F439II) }
   {$define STM32F429_439 }
   {$define STM32F43xx }
   {$define LQFP176 }
@@ -1313,7 +1313,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F439NG) or defined(STM32F439NI) }
+{$if defined(FPC_MCU_STM32F439NG) or defined(FPC_MCU_STM32F439NI) }
   {$define STM32F429_439 }
   {$define STM32F43xx }
   {$define TFBGA216 }
@@ -1327,7 +1327,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F439VG) or defined(STM32F439VI) }
+{$if defined(FPC_MCU_STM32F439VG) or defined(FPC_MCU_STM32F439VI) }
   {$define STM32F429_439 }
   {$define STM32F43xx }
   {$define LQFP100 }
@@ -1341,7 +1341,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F439ZG) or defined(STM32F439ZI) }
+{$if defined(FPC_MCU_STM32F439ZG) or defined(FPC_MCU_STM32F439ZI) }
   {$define STM32F429_439 }
   {$define STM32F43xx }
   {$define LQFP144 }
@@ -1355,7 +1355,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F439ZG) or defined(STM32F439ZI) }
+{$if defined(FPC_MCU_STM32F439ZG) or defined(FPC_MCU_STM32F439ZI) }
   {$define STM32F429_439 }
   {$define STM32F43xx }
   {$define WLCSP143 }
@@ -1369,7 +1369,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F446MC) or defined(STM32F446ME) }
+{$if defined(FPC_MCU_STM32F446MC) or defined(FPC_MCU_STM32F446ME) }
   {$define STM32F446 }
   {$define STM32F44xx }
   {$define WLCSP81 }
@@ -1383,7 +1383,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F446RC) or defined(STM32F446RE) }
+{$if defined(FPC_MCU_STM32F446RC) or defined(FPC_MCU_STM32F446RE) }
   {$define STM32F446 }
   {$define STM32F44xx }
   {$define LQFP64 }
@@ -1397,7 +1397,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F446VC) or defined(STM32F446VE) }
+{$if defined(FPC_MCU_STM32F446VC) or defined(FPC_MCU_STM32F446VE) }
   {$define STM32F446 }
   {$define STM32F44xx }
   {$define LQFP100 }
@@ -1411,21 +1411,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F446ZC) or defined(STM32F446ZE) }
-  {$define STM32F446 }
-  {$define STM32F44xx }
-  {$define UFBGA144 }
-  {$define has_gpioa } {$define has_gpiob } {$define has_gpioc } {$define has_gpiod } {$define has_gpioe } {$define has_gpiof } {$define has_gpiog } {$define has_gpioh }
-  {$define has_usart1 } {$define has_usart2 } {$define has_usart3 } {$define has_usart6 } {$define has_uart4 } {$define has_uart5 }
-  {$define has_spi1 } {$define has_spi2 } {$define has_spi3 } {$define has_spi4 }
-  {$define has_i2c1 } {$define has_i2c2 } {$define has_i2c3 }
-  {$define has_tim1 } {$define has_tim10 } {$define has_tim11 } {$define has_tim12 } {$define has_tim13 } {$define has_tim14 } {$define has_tim2 } {$define has_tim3 } {$define has_tim4 } {$define has_tim5 } {$define has_tim6 } {$define has_tim7 } {$define has_tim8 } {$define has_tim9 }
-  {$define has_adc1 } {$define has_adc2 } {$define has_adc3 }
-  {$define has_dac1 }
-  {$define has_can1 } {$define has_can2 }
-  {$define has_rtc }
-{$endif}
-{$if defined(STM32F446ZC) or defined(STM32F446ZE) }
+{$if defined(FPC_MCU_STM32F446ZC) or defined(FPC_MCU_STM32F446ZE) }
   {$define STM32F446 }
   {$define STM32F44xx }
   {$define UFBGA144 }
@@ -1439,7 +1425,21 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F446ZC) or defined(STM32F446ZE) }
+{$if defined(FPC_MCU_STM32F446ZC) or defined(FPC_MCU_STM32F446ZE) }
+  {$define STM32F446 }
+  {$define STM32F44xx }
+  {$define UFBGA144 }
+  {$define has_gpioa } {$define has_gpiob } {$define has_gpioc } {$define has_gpiod } {$define has_gpioe } {$define has_gpiof } {$define has_gpiog } {$define has_gpioh }
+  {$define has_usart1 } {$define has_usart2 } {$define has_usart3 } {$define has_usart6 } {$define has_uart4 } {$define has_uart5 }
+  {$define has_spi1 } {$define has_spi2 } {$define has_spi3 } {$define has_spi4 }
+  {$define has_i2c1 } {$define has_i2c2 } {$define has_i2c3 }
+  {$define has_tim1 } {$define has_tim10 } {$define has_tim11 } {$define has_tim12 } {$define has_tim13 } {$define has_tim14 } {$define has_tim2 } {$define has_tim3 } {$define has_tim4 } {$define has_tim5 } {$define has_tim6 } {$define has_tim7 } {$define has_tim8 } {$define has_tim9 }
+  {$define has_adc1 } {$define has_adc2 } {$define has_adc3 }
+  {$define has_dac1 }
+  {$define has_can1 } {$define has_can2 }
+  {$define has_rtc }
+{$endif}
+{$if defined(FPC_MCU_STM32F446ZC) or defined(FPC_MCU_STM32F446ZE) }
   {$define STM32F446 }
   {$define STM32F44xx }
   {$define LQFP144 }
@@ -1453,7 +1453,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469AE) or defined(STM32F469AG) or defined(STM32F469AI) }
+{$if defined(FPC_MCU_STM32F469AE) or defined(FPC_MCU_STM32F469AG) or defined(FPC_MCU_STM32F469AI) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define UFBGA169 }
@@ -1467,7 +1467,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469AE) or defined(STM32F469AG) or defined(STM32F469AI) }
+{$if defined(FPC_MCU_STM32F469AE) or defined(FPC_MCU_STM32F469AG) or defined(FPC_MCU_STM32F469AI) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define WLCSP168 }
@@ -1481,7 +1481,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469BE) or defined(STM32F469BG) or defined(STM32F469BI) }
+{$if defined(FPC_MCU_STM32F469BE) or defined(FPC_MCU_STM32F469BG) or defined(FPC_MCU_STM32F469BI) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define LQFP208 }
@@ -1495,7 +1495,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469IE) or defined(STM32F469IG) }
+{$if defined(FPC_MCU_STM32F469IE) or defined(FPC_MCU_STM32F469IG) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define LQFP176 }
@@ -1509,7 +1509,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469IE) or defined(STM32F469IG) or defined(STM32F469II) }
+{$if defined(FPC_MCU_STM32F469IE) or defined(FPC_MCU_STM32F469IG) or defined(FPC_MCU_STM32F469II) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define UFBGA176 }
@@ -1523,7 +1523,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469II) }
+{$if defined(FPC_MCU_STM32F469II) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define LQFP176 }
@@ -1537,7 +1537,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469NE) or defined(STM32F469NG) }
+{$if defined(FPC_MCU_STM32F469NE) or defined(FPC_MCU_STM32F469NG) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define TFBGA216 }
@@ -1551,7 +1551,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469NI) }
+{$if defined(FPC_MCU_STM32F469NI) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define TFBGA216 }
@@ -1565,7 +1565,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469VE) or defined(STM32F469VG) }
+{$if defined(FPC_MCU_STM32F469VE) or defined(FPC_MCU_STM32F469VG) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define LQFP100 }
@@ -1579,7 +1579,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469VI) }
+{$if defined(FPC_MCU_STM32F469VI) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define LQFP100 }
@@ -1593,7 +1593,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469ZE) or defined(STM32F469ZG) }
+{$if defined(FPC_MCU_STM32F469ZE) or defined(FPC_MCU_STM32F469ZG) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define LQFP144 }
@@ -1607,7 +1607,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F469ZI) }
+{$if defined(FPC_MCU_STM32F469ZI) }
   {$define STM32F469_479 }
   {$define STM32F46xx }
   {$define LQFP144 }
@@ -1621,7 +1621,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F479AG) or defined(STM32F479AI) }
+{$if defined(FPC_MCU_STM32F479AG) or defined(FPC_MCU_STM32F479AI) }
   {$define STM32F469_479 }
   {$define STM32F47xx }
   {$define UFBGA169 }
@@ -1635,7 +1635,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F479AG) or defined(STM32F479AI) }
+{$if defined(FPC_MCU_STM32F479AG) or defined(FPC_MCU_STM32F479AI) }
   {$define STM32F469_479 }
   {$define STM32F47xx }
   {$define WLCSP168 }
@@ -1649,7 +1649,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F479BG) or defined(STM32F479BI) }
+{$if defined(FPC_MCU_STM32F479BG) or defined(FPC_MCU_STM32F479BI) }
   {$define STM32F469_479 }
   {$define STM32F47xx }
   {$define LQFP208 }
@@ -1663,7 +1663,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F479IG) or defined(STM32F479II) }
+{$if defined(FPC_MCU_STM32F479IG) or defined(FPC_MCU_STM32F479II) }
   {$define STM32F469_479 }
   {$define STM32F47xx }
   {$define UFBGA176 }
@@ -1677,7 +1677,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F479IG) or defined(STM32F479II) }
+{$if defined(FPC_MCU_STM32F479IG) or defined(FPC_MCU_STM32F479II) }
   {$define STM32F469_479 }
   {$define STM32F47xx }
   {$define LQFP176 }
@@ -1691,7 +1691,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F479NG) or defined(STM32F479NI) }
+{$if defined(FPC_MCU_STM32F479NG) or defined(FPC_MCU_STM32F479NI) }
   {$define STM32F469_479 }
   {$define STM32F47xx }
   {$define TFBGA216 }
@@ -1705,7 +1705,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F479VG) or defined(STM32F479VI) }
+{$if defined(FPC_MCU_STM32F479VG) or defined(FPC_MCU_STM32F479VI) }
   {$define STM32F469_479 }
   {$define STM32F47xx }
   {$define LQFP100 }
@@ -1719,7 +1719,7 @@
   {$define has_can1 } {$define has_can2 }
   {$define has_rtc }
 {$endif}
-{$if defined(STM32F479ZG) or defined(STM32F479ZI) }
+{$if defined(FPC_MCU_STM32F479ZG) or defined(FPC_MCU_STM32F479ZI) }
   {$define STM32F469_479 }
   {$define STM32F47xx }
   {$define LQFP144 }

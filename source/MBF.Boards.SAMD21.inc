@@ -19,30 +19,30 @@
 // first, convert user friendly controller names to the real controller used in the design
 
 {$if defined(fpc_mcu_xiao) }
-  {$define samd21g18a}
+  {$define fpc_mcu_samd21g18a}
 {$endif}
 
 {$if defined(fpc_mcu_feather_m0) }
   {$define has_featherpins}
-  {$define samd21g18a}
+  {$define fpc_mcu_samd21g18a}
 {$endif}
 
 {$if defined(fpc_mcu_itsybitsy_m0) }
   {$define has_featherpins}
-  {$define samd21g18a}
+  {$define fpc_mcu_samd21g18a}
 {$endif}
 
 {$if defined(fpc_mcu_metro_m0) }
   {$define has_arduinopins}
-  {$define samd21g18a}
+  {$define fpc_mcu_samd21g18a}
 {$endif}
 
 {$if defined(fpc_mcu_trinket_m0) }
   {$define has_arduinopins}
-  {$define samd21e18a}
+  {$define fpc_mcu_samd21e18a}
 {$endif}
 
-{$if defined(samd21e18a) }
+{$if defined(fpc_mcu_samd21e18a) }
   {$define SAMD21}
   {$define has_gpioa }  
   {$define has_sercom0 } {$define has_sercom1 } {$define has_sercom2 } {$define has_sercom3 } 
@@ -53,7 +53,7 @@
   {$define has_dac }   
   {$define has_rtc }   
 {$endif}
-{$if defined(samd21g18a) }
+{$if defined(fpc_mcu_samd21g18a) }
   {$define SAMD21}
   {$define has_gpioa }   {$define has_gpiob }  
   {$define has_sercom0 } {$define has_sercom1 } {$define has_sercom2 } {$define has_sercom3 } 
@@ -65,7 +65,7 @@
   {$define has_dac }   
   {$define has_rtc }   
 {$endif}
-{$if defined(samd21j18a) }
+{$if defined(fpc_mcu_samd21j18a) }
   {$define SAMD21}
   {$define has_gpioa }   {$define has_gpiob }  
   {$define has_sercom0 } {$define has_sercom1 } {$define has_sercom2 } {$define has_sercom3 } 
