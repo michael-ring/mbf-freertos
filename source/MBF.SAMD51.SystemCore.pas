@@ -25,6 +25,35 @@ interface
 {$INCLUDE MBF.ARM.SystemCore.inc}
 {$UNDEF INTERFACE}
 
+{$ifdef freertos_fat}
+
+  {$LINKLIB libfreertos_wio.a}
+  {$LINKLIB libstdc++_nano.a,static}
+  {$LINKLIB libm.a,static}
+  {$LINKLIB libc_nano.a,static}
+  {$LINKLIB libgcc.a,static}
+  {$LINKLIB libnosys.a,static}
+
+  procedure BasicSystemInit; cdecl; external name 'SAMD51SystemInit';
+
+  procedure BasicTickHandler; cdecl; external name 'SysTick_DefaultHandler';
+  function  FreeRTOSSysTickHook:integer; cdecl; external name 'sysTickHook';
+
+  function  roundf(x:single):Cardinal; cdecl; external name 'lroundf';
+  function  round(x:double):Cardinal; cdecl; external name 'lround';
+
+  function  cosf(x:single):single; cdecl; external name 'cosf';
+  function  sinf(x:single):single; cdecl; external name 'sinf';
+  function  cos(x:double):double; cdecl; external name 'cos';
+  function  sin(x:double):double; cdecl; external name 'sin';
+
+  function  acosf(x:single):single; cdecl; external name 'acosf';
+  function  acos(x:double):double; cdecl; external name 'acos';
+  function  asinf(x:single):single; cdecl; external name 'asinf';
+  function  asin(x:double):double; cdecl; external name 'asin';
+
+{$endif freertos_fat}
+
 {$if defined(SAMD51)}
 const
   OSC48MFrequency= 48000000;
@@ -57,7 +86,11 @@ type
 var
   SystemCore : TSystemCore;
   //This var is needed to communicate CPU Speed to FreeRTOS
+  {$ifdef freertos_fat}
+  SystemCoreClock : uint32; cvar; external;
+  {$else}
   SystemCoreClock : uint32; cvar;
+  {$endif freertos_fat}
 
 implementation
 
@@ -70,6 +103,14 @@ uses
 {$UNDEF IMPLEMENTATION}
 
 {$REGION 'TSystemCore'}
+
+{$ifdef freertos_fat}
+procedure delay(ms:dword); [public, alias: 'delay'];
+begin
+  if (xTaskGetSchedulerState() <> taskSCHEDULER_NOT_STARTED) then
+      vTaskDelay(ms);
+end;
+{$endif freertos_fat}
 
 function TSAMD51SystemCore.GetSysTickClockFrequency : longWord; [public, alias: 'MBF_GetSysTickClockFrequency'];
 begin

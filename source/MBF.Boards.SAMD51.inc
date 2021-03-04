@@ -19,6 +19,7 @@
 // first, convert user friendly controller names to the real controller used in the design
 
 {$if defined(fpc_mcu_wio_terminal) }
+  {$define has_arduinopins}
   {$define fpc_mcu_samd51p19a}
 {$endif}
 
