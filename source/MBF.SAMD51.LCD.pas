@@ -53,6 +53,69 @@ const
 
 
 type
+  TTEXTFONT = (GLCD,GFXFF,FONT2,FONT3,FONT4,FONT5,FONT6,FONT7,FONT8);
+  TGFXFONT  = (FF0,TT1,
+               FF1,FF2,FF3,FF4,FF5,FF6,FF7,FF8,FF9,FF10,
+               FF11,FF12,FF13,FF14,FF15,FF16,FF17,FF18,FF19,FF20,
+               FF21,FF22,FF23,FF24,FF25,FF26,FF27,FF28,FF29,FF30,
+               FF31,FF32,FF33,FF34,FF35,FF36,FF37,FF38,FF39,FF40,
+               FF41,FF42,FF43,FF44,FF45,FF46,FF47,FF48
+  );
+const
+  FONTNAMES:array[TGFXFONT] of string = (
+  'GLCD',
+  'Tom Thumb',
+  'Mono 9',
+  'Mono 12',
+  'Mono 18',
+  'Mono 24',
+  'Mono bold 9',
+  'Mono bold 12',
+  'Mono bold 18',
+  'Mono bold 24',
+  'Mono oblique 9',
+  'Mono oblique 12',
+  'Mono oblique 18',
+  'Mono oblique 24',
+  'Mono bold oblique 9',
+  'Mono bold oblique 12',
+  'Mono bold oblique 18',
+  'Mono bold obl. 24',
+  'Sans 9',
+  'Sans 12',
+  'Sans 18',
+  'Sans 24',
+  'Sans bold 9',
+  'Sans bold 12',
+  'Sans bold 18',
+  'Sans bold 24',
+  'Sans oblique 9',
+  'Sans oblique 12',
+  'Sans oblique 18',
+  'Sans oblique 24',
+  'Sans bold oblique 9',
+  'Sans bold oblique 12',
+  'Sans bold oblique 18',
+  'Sans bold oblique 24',
+  'Serif 9',
+  'Serif 12',
+  'Serif 18',
+  'Serif 24',
+  'Serif italic 9',
+  'Serif italic 12',
+  'Serif italic 18',
+  'Serif italic 24',
+  'Serif bold 9',
+  'Serif bold 12',
+  'Serif bold 18',
+  'Serif bold 24',
+  'Serif bold italic 9',
+  'Serif bold italic 12',
+  'Serif bold italic 18',
+  'Serif bold italic 24'
+  );
+
+type
   TFTHandle = THandle;
   SpriteHandle = THandle;
 
@@ -79,22 +142,28 @@ procedure setTextColor(color:word);overload;
 procedure setTextColor(fgcolor,bgcolor:word);overload;
 procedure setTextSize(size:byte);
 
-function  drawChar(uniCode:word; x,y:integer; font:byte):shortint;
+function  textWidth(line:pchar; font:TTEXTFONT=TTEXTFONT.GLCD):smallint;
+function  fontHeight(font:TTEXTFONT=TTEXTFONT.GLCD):smallint;
+
+procedure setGFXFont(font:TGFXFONT=TGFXFONT.FF0);
+procedure setTextFont(font:TTEXTFONT=TTEXTFONT.FONT2);
+
+function  drawChar(uniCode:word; x,y:integer; font:TTEXTFONT=TTEXTFONT.GLCD):smallint;
 procedure drawCharEx(x,y:integer; c:word; color,bg:dword; size:byte);
-function  drawString(line:pchar; x,y:integer; font:byte):shortint;
-function  drawNumber(long_num:longint; poX,poY:integer; font:byte):shortint;
-function  drawFloat(floatNumber:valreal;decimal:byte; poX,poY:integer; font:byte):shortint;
+function  drawString(line:pchar; x,y:integer; font:TTEXTFONT=TTEXTFONT.GLCD):smallint;
+function  drawNumber(long_num:longint; poX,poY:integer; font:TTEXTFONT=TTEXTFONT.GLCD):smallint;
+function  drawFloat(floatNumber:valreal;decimal:byte; poX,poY:integer; font:TTEXTFONT=TTEXTFONT.GLCD):smallint;
 
 function  SpriteInit:SpriteHandle;
 procedure SpriteDelete(Sprite:SpriteHandle);
-procedure SpriteCreate(Sprite:SpriteHandle; w, h:shortint);
+procedure SpriteCreate(Sprite:SpriteHandle; w, h:smallint);
 procedure SpriteFill(Sprite:SpriteHandle; color:dword);
 procedure SpriteSetTextSize(Sprite:SpriteHandle; size:byte);
 procedure SpriteSetTextColor(Sprite:SpriteHandle; color:word);
-procedure SpriteDrawNumber(Sprite:SpriteHandle; long_num:longword; poX,poY:integer; font:byte);
-function  SpriteDrawChar(Sprite:SpriteHandle; uniCode:word; x,y:integer; font:byte):shortint;
+procedure SpriteDrawNumber(Sprite:SpriteHandle; long_num:longword; poX,poY:integer; font:TTEXTFONT=TTEXTFONT.GLCD);
+function  SpriteDrawChar(Sprite:SpriteHandle; uniCode:word; x,y:integer; font:TTEXTFONT=TTEXTFONT.GLCD):smallint;
 procedure SpriteDrawCharEx(Sprite:SpriteHandle; x,y:integer; c:word; color,bg:dword; size:byte);
-function  SpriteDrawString(Sprite:SpriteHandle; line:pchar; x,y:integer; font:byte):shortint;
+function  SpriteDrawString(Sprite:SpriteHandle; line:pchar; x,y:integer; font:TTEXTFONT=TTEXTFONT.GLCD):smallint;
 procedure SpritePushSprite(Sprite:SpriteHandle; x,y:integer);
 
 var
@@ -125,23 +194,29 @@ function  tft_color565(TFTSelf:TFTHandle; red,green,blue:byte):word; cdecl; exte
 procedure tft_setTextColor(TFTSelf:TFTHandle; fgcolor,bgcolor:word); cdecl; external name 'tft_setTextColor';
 procedure tft_setTextSize(TFTSelf:TFTHandle; size:byte); cdecl; external name 'tft_setTextSize';
 
-function  tft_drawString(TFTSelf:TFTHandle; line:pchar; x,y:integer; font:byte):shortint; cdecl; external name 'tft_drawString';
-function  tft_drawChar(TFTSelf:TFTHandle; uniCode:word; x,y:integer; font:byte):shortint; cdecl; external name 'tft_drawChar';
+function  tft_textWidth(TFTSelf:TFTHandle; line:pchar; font:byte):smallint; cdecl; external name 'tft_textWidth';
+function  tft_fontHeight(TFTSelf:TFTHandle; font:byte):smallint; cdecl; external name 'tft_fontHeight';
+
+procedure tft_setTextFont(TFTSelf:TFTHandle; font:byte); cdecl; external name 'tft_setTextFont';
+procedure tft_setFreeFont(TFTSelf:TFTHandle; font:byte); cdecl; external name 'tft_setFreeFont';
+
+function  tft_drawString(TFTSelf:TFTHandle; line:pchar; x,y:integer; font:byte):smallint; cdecl; external name 'tft_drawString';
+function  tft_drawChar(TFTSelf:TFTHandle; uniCode:word; x,y:integer; font:byte):smallint; cdecl; external name 'tft_drawChar';
 procedure tft_drawCharEx(TFTSelf:TFTHandle; x,y:integer; c:word; color,bg:dword; size:byte); cdecl; external name 'tft_drawCharEx';
 
-function  tft_drawNumber(TFTSelf:TFTHandle;long_num:longint; poX,poY:integer; font:byte):shortint; cdecl; external name 'tft_drawNumber';
-function  tft_drawFloat(TFTSelf:TFTHandle;floatNumber:valreal;decimal:byte; poX,poY:integer; font:byte):shortint; cdecl; external name 'tft_drawFloat';
+function  tft_drawNumber(TFTSelf:TFTHandle;long_num:longint; poX,poY:integer; font:byte):smallint; cdecl; external name 'tft_drawNumber';
+function  tft_drawFloat(TFTSelf:TFTHandle;floatNumber:valreal;decimal:byte; poX,poY:integer; font:byte):smallint; cdecl; external name 'tft_drawFloat';
 
 function  sprite_init(TFTOwner:TFTHandle):SpriteHandle; cdecl; external name 'sprite_init';
 procedure sprite_delete(Sprite:SpriteHandle); cdecl; external name 'sprite_delete';
-procedure sprite_createSprite(Sprite:SpriteHandle; w, h:shortint); cdecl; external name 'sprite_createSprite';
+procedure sprite_createSprite(Sprite:SpriteHandle; w, h:smallint); cdecl; external name 'sprite_createSprite';
 procedure sprite_fillSprite(Sprite:SpriteHandle; color:dword); cdecl; external name 'sprite_fillSprite';
 procedure sprite_setTextSize(Sprite:SpriteHandle; size:byte); cdecl; external name 'sprite_setTextSize';
 procedure sprite_setTextColor(Sprite:SpriteHandle; color:word); cdecl; external name 'sprite_setTextColor';
 procedure sprite_drawNumber(Sprite:SpriteHandle; long_num:longword; poX,poY:integer; font:byte); cdecl; external name 'sprite_drawNumber';
-function  sprite_drawChar(Sprite:SpriteHandle; uniCode:word; x,y:integer; font:byte):shortint; cdecl; external name 'sprite_drawChar';
+function  sprite_drawChar(Sprite:SpriteHandle; uniCode:word; x,y:integer; font:byte):smallint; cdecl; external name 'sprite_drawChar';
 procedure sprite_drawCharEx(Sprite:SpriteHandle; x,y:integer; c:word; color,bg:dword; size:byte); cdecl; external name 'sprite_drawCharEx';
-function  sprite_drawString(Sprite:SpriteHandle; line:pchar; x,y:integer; font:byte):shortint; cdecl; external name 'sprite_drawString';
+function  sprite_drawString(Sprite:SpriteHandle; line:pchar; x,y:integer; font:byte):smallint; cdecl; external name 'sprite_drawString';
 procedure sprite_pushSprite(Sprite:SpriteHandle; x,y:integer); cdecl; external name 'sprite_pushSprite';
 
 procedure TFTCreate;
@@ -255,11 +330,37 @@ begin
     tft_setTextSize(TFT,size);
 end;
 
-function drawChar(uniCode:word; x,y:integer; font:byte):shortint;
+function textWidth(line:pchar; font:TTEXTFONT):smallint;
 begin
   result:=0;
   if (TFT<>THandle(-1)) then
-    result:=tft_drawChar(TFT,uniCode,x,y,font);
+    result:=tft_textWidth(TFT,line,Ord(font));
+end;
+
+function fontHeight(font:TTEXTFONT):smallint;
+begin
+  result:=0;
+  if (TFT<>THandle(-1)) then
+    result:=tft_fontHeight(TFT,Ord(font));
+end;
+
+procedure setGFXFont(font:TGFXFONT);
+begin
+  if (TFT<>THandle(-1)) then
+    tft_setFreeFont(TFT,Ord(font));
+end;
+
+procedure setTextFont(font:TTEXTFONT);
+begin
+  if (TFT<>THandle(-1)) then
+    tft_setTextFont(TFT,Ord(font));
+end;
+
+function drawChar(uniCode:word; x,y:integer; font:TTEXTFONT):smallint;
+begin
+  result:=0;
+  if (TFT<>THandle(-1)) then
+    result:=tft_drawChar(TFT,uniCode,x,y,Ord(font));
 end;
 
 procedure drawCharEx(x,y:integer; c:word; color,bg:dword; size:byte);
@@ -268,25 +369,25 @@ begin
     tft_drawCharEx(TFT,x,y,c,color,bg,size);
 end;
 
-function drawString(line:pchar; x,y:integer; font:byte):shortint;
+function drawString(line:pchar; x,y:integer; font:TTEXTFONT):smallint;
 begin
   result:=0;
   if (TFT<>THandle(-1)) then
-  result:=tft_drawString(TFT,line,x,y,font);
+  result:=tft_drawString(TFT,line,x,y,Ord(font));
 end;
 
-function drawNumber(long_num:longint; poX,poY:integer; font:byte):shortint;
+function drawNumber(long_num:longint; poX,poY:integer; font:TTEXTFONT):smallint;
 begin
   result:=0;
   if (TFT<>THandle(-1)) then
-     result:=tft_drawNumber(TFT,long_num,poX,poY,font);
+     result:=tft_drawNumber(TFT,long_num,poX,poY,Ord(font));
 end;
 
-function drawFloat(floatNumber:valreal;decimal:byte; poX,poY:integer; font:byte):shortint;
+function drawFloat(floatNumber:valreal;decimal:byte; poX,poY:integer; font:TTEXTFONT):smallint;
 begin
   result:=0;
   if (TFT<>THandle(-1)) then
-     result:=tft_drawFloat(TFT,floatNumber,decimal,poX,poY,font);
+     result:=tft_drawFloat(TFT,floatNumber,decimal,poX,poY,Ord(font));
 end;
 
 function SpriteInit:SpriteHandle;
@@ -302,7 +403,7 @@ begin
     sprite_delete(Sprite)
 end;
 
-procedure SpriteCreate(Sprite:SpriteHandle; w, h:shortint);
+procedure SpriteCreate(Sprite:SpriteHandle; w, h:smallint);
 begin
   if (Sprite<>THandle(-1)) then
      sprite_createSprite(Sprite,w,h);
@@ -326,17 +427,17 @@ begin
     sprite_setTextColor(Sprite,color);
 end;
 
-procedure SpriteDrawNumber(Sprite:SpriteHandle; long_num:longword; poX,poY:integer; font:byte);
+procedure SpriteDrawNumber(Sprite:SpriteHandle; long_num:longword; poX,poY:integer; font:TTEXTFONT);
 begin
   if (Sprite<>THandle(-1)) then
-    sprite_drawNumber(Sprite,long_num,poX,poY,font);
+    sprite_drawNumber(Sprite,long_num,poX,poY,Ord(font));
 end;
 
-function SpriteDrawChar(Sprite:SpriteHandle; uniCode:word; x,y:integer; font:byte):shortint;
+function SpriteDrawChar(Sprite:SpriteHandle; uniCode:word; x,y:integer; font:TTEXTFONT):smallint;
 begin
   result:=0;
   if (Sprite<>THandle(-1)) then
-    result:=sprite_drawChar(Sprite,uniCode,x,y,font);
+    result:=sprite_drawChar(Sprite,uniCode,x,y,Ord(font));
 end;
 
 procedure SpriteDrawCharEx(Sprite:SpriteHandle; x,y:integer; c:word; color,bg:dword; size:byte);
@@ -345,11 +446,11 @@ begin
     sprite_drawCharEx(Sprite,x,y,c,color,bg,size);
 end;
 
-function SpriteDrawString(Sprite:SpriteHandle; line:pchar; x,y:integer; font:byte):shortint;
+function SpriteDrawString(Sprite:SpriteHandle; line:pchar; x,y:integer; font:TTEXTFONT):smallint;
 begin
   result:=0;
   if (Sprite<>THandle(-1)) then
-    result:=sprite_drawString(Sprite,line,x,y,font);
+    result:=sprite_drawString(Sprite,line,x,y,Ord(font));
 end;
 
 procedure SpritePushSprite(Sprite:SpriteHandle; x,y:integer);
