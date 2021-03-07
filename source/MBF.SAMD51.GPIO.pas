@@ -42,14 +42,37 @@ const
   Pad2=$120000;
   Pad3=$130000;
 
+  PINMODE_INPUT           = 0;
+  PINMODE_OUTPUT          = 1;
+  PINMODE_INPUT_PULLUP    = 2;
+  PINMODE_INPUT_PULLDOWN  = 3;
+
+
 type
   TPinLevel=(Low=0,High=1);
   TPinValue=0..1;
   TPinIdentifier=-1..160;
-  TPinMode = (Input=%00, Output=%01, Analog=%11, AF0=$10, AF1, AF2, AF3, AF4, AF5, AF6, AF7, AF8, AF9, AF10, AF11, AF12, AF13);
+
+  TPinMode = (Input=%00, Output=%01);
   TPinDrive = (None=%00,PullUp=%01,PullDown=%10);
   TPinOutputMode = (PushPull=0,OpenDrain=1);
   TPinOutputStrength = (Normal=%0, High=%1);
+
+  eAnalogReference = (
+    AR_DEFAULT,
+    AR_INTERNAL1V0,
+    AR_INTERNAL1V1,
+    AR_INTERNAL1V2,
+    AR_INTERNAL1V25,
+    AR_INTERNAL2V0,
+    AR_INTERNAL2V2,
+    AR_INTERNAL2V23,
+    AR_INTERNAL2V4,
+    AR_INTERNAL2V5,
+    AR_INTERNAL1V65,
+    AR_EXTERNAL
+  );
+
 {$REGION PinDefinitions}
 
 type
@@ -221,6 +244,14 @@ end;
 {$ifdef freertos_fat}
 procedure freertos_pinMode(ulPin:DWORD;ulMode:DWORD); external name 'pinMode';
 procedure freertos_digitalWrite(ulPin:DWORD;ulVal:DWORD); external name 'digitalWrite';
+function  freertos_digitalRead(ulPin:DWORD):integer; external name 'digitalRead';
+
+procedure freertos_analogReference(ulMode:byte); external name 'analogReference';
+procedure freertos_analogWrite(ulPin:DWORD; ulValue:DWORD); external name 'analogWrite';
+function  freertos_analogRead(ulPin:DWORD):DWORD; external name 'analogRead';
+procedure freertos_analogReadResolution(res:integer); external name 'analogReadResolution';
+procedure freertos_analogWriteResolution(res:integer); external name 'analogWriteResolution';
+procedure freertos_analogOutputInit; external name 'analogOutputInit';
 {$endif freertos_fat}
 
 
@@ -242,33 +273,62 @@ begin
   end;
 end;
 
+{$ifdef freertos_fat}
+procedure TGPIO.SetPinMode(const Pin: TPinIdentifier; const Value: TPinMode);
+begin
+  case Value of
+    TPinMode.Input     :  freertos_pinMode(Pin,PINMODE_INPUT);
+    TPinMode.Output    :  freertos_pinMode(Pin,PINMODE_OUTPUT);
+  end;
+end;
+
+procedure TGPIO.SetPinValue(const Pin: TPinIdentifier; const Value: TPinValue);
+begin
+  freertos_digitalWrite(Pin,Value);
+end;
+
+procedure TGPIO.SetPinDrive(const Pin: TPinIdentifier; const Value: TPinDrive);
+begin
+  case Value of
+    TPinDrive.None : freertos_pinMode(Pin,PINMODE_INPUT);
+    TPinDrive.PullUp : freertos_pinMode(Pin,PINMODE_INPUT_PULLUP);
+    TPinDrive.PullDown : freertos_pinMode(Pin,PINMODE_INPUT_PULLDOWN);
+  end;
+end;
+
+function TGPIO.GetPinValue(const Pin: TPinIdentifier): TPinValue;
+begin
+  result:=freertos_digitalRead(Pin);
+end;
+
+{$else}
 procedure TGPIO.SetPinMode(const Pin: TPinIdentifier; const Value: TPinMode);
 begin
   case Value of
     TPinMode.Input     : begin
-                           {$ifdef freertos_fat}
-                           freertos_pinMode(Pin,0);
-                           {$else}
                            clearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0);
                            Port.Group[Pin shr 5].DIRCLR := 1 shl (Pin and $1f);
-                           {$endif freertos_fat}
-
     end;
     TPinMode.Output    : begin
-                           {$ifdef freertos_fat}
-                           freertos_pinMode(Pin,1);
-                           {$else}
                            clearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0);
                            Port.Group[Pin shr 5].DIRSET := 1 shl (Pin and $1f);
-                           {$endif freertos_fat}
-
     end;
+  end;
+end;
 
-    TPinMode.Analog    : begin
-    end
-    else
-                         begin
-    end;
+procedure TGPIO.SetPinValue(const Pin: TPinIdentifier; const Value: TPinValue);
+begin
+  if Value = 1 then
+    Port.Group[Pin shr 5].OUTSET := 1 shl (Pin and $1f)
+  else
+    Port.Group[Pin shr 5].OUTCLR := 1 shl (Pin and $1f);
+end;
+
+procedure TGPIO.SetPinDrive(const Pin: TPinIdentifier; const Value: TPinDrive);
+begin
+  case Value of
+    TPinDrive.None :     ClearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
+    TPinDrive.PullUp :   SetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
   end;
 end;
 
@@ -277,21 +337,9 @@ begin
   Result := GetBitValue(Port.Group[Pin shr 5].&IN,Pin and $1f);
 end;
 
-procedure TGPIO.SetPinValue(const Pin: TPinIdentifier; const Value: TPinValue);
-begin
-  if Value = 1 then
-    {$ifdef freertos_fat}
-    freertos_digitalWrite(Pin,1)
-    {$else}
-    Port.Group[Pin shr 5].OUTSET := 1 shl (Pin and $1f)
     {$endif freertos_fat}
-  else
-    {$ifdef freertos_fat}
-    freertos_digitalWrite(Pin,0);
-    {$else}
-    Port.Group[Pin shr 5].OUTCLR := 1 shl (Pin and $1f);
-    {$endif freertos_fat}
-end;
+
+
 
 function TGPIO.GetPinLevel(const Pin: TPinIdentifier): TPinLevel;
 begin
@@ -335,14 +383,6 @@ begin
     Result := TPinDrive.PullUp
   else
     Result := TPinDrive.None;
-end;
-
-procedure TGPIO.SetPinDrive(const Pin: TPinIdentifier; const Value: TPinDrive);
-begin
-  case Value of
-    TPinDrive.None :     ClearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
-    TPinDrive.PullUp :   SetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
-  end;
 end;
 
 function TGPIO.GetPinOutputMode(const Pin: TPinIdentifier): TPinOutputMode;
