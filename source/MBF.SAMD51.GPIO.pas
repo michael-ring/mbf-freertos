@@ -42,12 +42,6 @@ const
   Pad2=$120000;
   Pad3=$130000;
 
-  PINMODE_INPUT           = 0;
-  PINMODE_OUTPUT          = 1;
-  PINMODE_INPUT_PULLUP    = 2;
-  PINMODE_INPUT_PULLDOWN  = 3;
-
-
 type
   TPinLevel=(Low=0,High=1);
   TPinValue=0..1;
@@ -242,6 +236,12 @@ begin
 end;
 
 {$ifdef freertos_fat}
+const
+  PINMODE_INPUT           = 0;
+  PINMODE_OUTPUT          = 1;
+  PINMODE_INPUT_PULLUP    = 2;
+  PINMODE_INPUT_PULLDOWN  = 3;
+
 procedure freertos_pinMode(ulPin:DWORD;ulMode:DWORD); external name 'pinMode';
 procedure freertos_digitalWrite(ulPin:DWORD;ulVal:DWORD); external name 'digitalWrite';
 function  freertos_digitalRead(ulPin:DWORD):integer; external name 'digitalRead';
