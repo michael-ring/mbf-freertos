@@ -301,6 +301,23 @@ begin
   result:=freertos_digitalRead(Pin);
 end;
 
+function TGPIO.GetPinLevel(const Pin: TPinIdentifier): TPinLevel;
+begin
+  if GetPinValue(Pin)=1 then
+    Result := TPinLevel.High
+  else
+    Result := TPinLevel.Low;
+end;
+
+procedure TGPIO.SetPinLevel(const Pin: TPinIdentifier; const Level: TPinLevel);
+begin
+  if Level = TPinLevel.High then
+     SetPinValue(Pin,1)
+  else
+     SetPinValue(Pin,0);
+end;
+
+
 {$else}
 procedure TGPIO.SetPinMode(const Pin: TPinIdentifier; const Value: TPinMode);
 begin
@@ -337,10 +354,6 @@ begin
   Result := GetBitValue(Port.Group[Pin shr 5].&IN,Pin and $1f);
 end;
 
-    {$endif freertos_fat}
-
-
-
 function TGPIO.GetPinLevel(const Pin: TPinIdentifier): TPinLevel;
 begin
   if GetBitValue(Port.Group[Pin shr 5].&IN,Pin and $1f) <> 0 then
@@ -356,6 +369,8 @@ begin
   else
     Port.Group[Pin shr 5].OUTCLR := 1 shl (Pin and $1f);
 end;
+
+{$endif freertos_fat}
 
 procedure TGPIO.SetPinLevelHigh(const Pin: TPinIdentifier);
 begin
