@@ -1,4 +1,4 @@
-unit MBF.SAMD51.Usb;
+unit MBF.SAMD51.USBCDC;
 
 {$WARN 4055 off : Conversion between ordinals and pointers is not portable}
 
