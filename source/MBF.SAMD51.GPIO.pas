@@ -227,6 +227,16 @@ type
   end; *)
 
 
+{$ifdef freertos_fat}
+const
+  INTERRUPT_ON_CHANGE     = 2;
+  INTERRUPT_ON_FALLING    = 3;
+  INTERRUPT_ON_RISING     = 4;
+
+//procedure attachInterrupt(ulPin:DWORD; callback:pointer; mode:dword); external name 'attachInterrupt';
+//procedure detachInterrupt(ulPin:DWORD); external name 'detachInterrupt';
+{$endif freertos_fat}
+
 var
   GPIO : TGPIO;
 
@@ -253,7 +263,6 @@ procedure freertos_analogReadResolution(res:integer); external name 'analogReadR
 procedure freertos_analogWriteResolution(res:integer); external name 'analogWriteResolution';
 procedure freertos_analogOutputInit; external name 'analogOutputInit';
 {$endif freertos_fat}
-
 
 function TGPIO.GetPinMode(const Pin: TPinIdentifier): TPinMode;
 begin
