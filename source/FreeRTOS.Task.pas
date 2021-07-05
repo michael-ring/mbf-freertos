@@ -210,7 +210,7 @@
   procedure vTaskAllocateMPURegions(xTask:TTaskHandle; var pxRegions:TMemoryRegion);external;
   procedure vTaskDelete(xTaskToDelete:TTaskHandle);external;
   procedure vTaskDelay(xTicksToDelay:TTickType);external;
-  procedure vTaskDelayUntil(var pxPreviousWakeTime:TTickType; xTimeIncrement:TTickType);external; 
+  procedure xTaskDelayUntil(var pxPreviousWakeTime:TTickType; xTimeIncrement:TTickType);external;
   function  xTaskAbortDelay(xTask:TTaskHandle):TBaseType;external;
   function  uxTaskPriorityGet(xTask:TTaskHandle):TUBaseType;external;
   function  uxTaskPriorityGetFromISR(xTask:TTaskHandle):TUBaseType;external;

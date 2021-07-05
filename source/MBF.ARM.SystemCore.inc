@@ -68,6 +68,8 @@ type
     { Delays the execution for the specified amount of milliseconds. CPU is put to sleep when milliseconds > 10}
     procedure Delay(const Milliseconds: TMilliseconds);
 
+    procedure DelayUntil(var pxPreviousWakeTime: TMilliseconds; const MilliSeconds: TMilliseconds);
+
     { Forward Declaration for a system bependant routine that evaluates the clock speed of the SysTick Timer }
     function GetSysTickClockFrequency: longWord;
 
@@ -113,7 +115,7 @@ end;
 
 function TSystemCore.ConvertMicrosecondsToCoreTicks(MicroSeconds : TMicroSeconds) : TTickCounter;
 begin
-  Result := Int64(Microseconds) * getSysTickClockFrequency div 1000000;
+  Result := (Microseconds * getSysTickClockFrequency) div 1000000;
 end;
 
 procedure TSystemCore.RegUnlock;
@@ -189,18 +191,24 @@ var
   StartTicks : TTickCounter;
   TickCount : TTickCounter;
 begin
+  if (Microseconds=0) then exit;
   //TODO Is this still good to do in a RTOS?
   StartTicks := GetCoreTimerValue;
   TickCount := convertMicroSecondsToCoreTicks(Microseconds);
   if (TickCount=0) then exit;
-  while TicksInBetween(StartTicks,GetCoreTimerValue) < TickCount do
-    ;
+  while TicksInBetween(StartTicks,GetCoreTimerValue) < TickCount do begin end;
 end;
 
 procedure TSystemCore.Delay(const MilliSeconds: TMilliseconds);
 begin
   //FreeRTOS included in MBF is preconfigured to work with a Tick Frequency of 1ms
   vTaskDelay(MilliSeconds);
+end;
+
+procedure TSystemCore.DelayUntil(var pxPreviousWakeTime: TMilliseconds; const MilliSeconds: TMilliseconds);
+begin
+  //FreeRTOS included in MBF is preconfigured to work with a Tick Frequency of 1ms
+  xTaskDelayUntil(pxPreviousWakeTime,MilliSeconds);
 end;
 
 function TSystemCore.GetSysTickClockFrequency: longWord; external name 'MBF_GetSysTickClockFrequency';

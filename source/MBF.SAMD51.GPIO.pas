@@ -46,10 +46,27 @@ type
   TPinLevel=(Low=0,High=1);
   TPinValue=0..1;
   TPinIdentifier=-1..160;
-  TPinMode = (Input=%00, Output=%01, Analog=%11, AF0=$10, AF1, AF2, AF3, AF4, AF5, AF6, AF7, AF8, AF9, AF10, AF11, AF12, AF13);
+
+  TPinMode = (Input=%00, Output=%01);
   TPinDrive = (None=%00,PullUp=%01,PullDown=%10);
   TPinOutputMode = (PushPull=0,OpenDrain=1);
   TPinOutputStrength = (Normal=%0, High=%1);
+
+  eAnalogReference = (
+    AR_DEFAULT,
+    AR_INTERNAL1V0,
+    AR_INTERNAL1V1,
+    AR_INTERNAL1V2,
+    AR_INTERNAL1V25,
+    AR_INTERNAL2V0,
+    AR_INTERNAL2V2,
+    AR_INTERNAL2V23,
+    AR_INTERNAL2V4,
+    AR_INTERNAL2V5,
+    AR_INTERNAL1V65,
+    AR_EXTERNAL
+  );
+
 {$REGION PinDefinitions}
 
 type
@@ -98,6 +115,69 @@ type
         A4 = TNativePin.PB8;   A5 = TNativePin.PB9;
       end;
     {$endif}
+    {$ifdef fpc_mcu_wio_terminal}
+      type
+        TArduinoPin = record
+      const
+        None=-1;
+        D13= TNativePin.PA15;
+      end;
+    {$endif}
+
+  {$endif}
+
+  {$ifdef fpc_mcu_wio_terminal}
+  const
+    // LEDs
+    PIN_LED_13	                 = 13;
+    PIN_LED		         = PIN_LED_13;
+    PIN_LED2		         = PIN_LED_13;
+    PIN_LED3		         = PIN_LED_13;
+    LED_BUILTIN		         = PIN_LED_13;
+    PIN_NEOPIXEL	         = PIN_LED_13;
+
+    //Digital PINs
+    D0                           = 0;
+    D1                           = 1;
+    D2                           = 2;
+    D3                           = 3;
+    D4                           = 4;
+    D5                           = 5;
+    D6                           = 6;
+    D7                           = 7;
+    D8                           = 8;
+
+    //Analog PINs
+    A0                           = D0;
+    A1                           = D1;
+    A2                           = D2;
+    A3                           = D3;
+    A4                           = D4;
+    A5                           = D5;
+    A6                           = D6;
+    A7                           = D7;
+    A8                           = D8;
+
+    // BUTTON
+    BUTTON_1                     = 28;
+    BUTTON_2                     = 29;
+    BUTTON_3                     = 30;
+    WIO_KEY_A                    = 28;
+    WIO_KEY_B                    = 29;
+    WIO_KEY_C                    = 30;
+
+    // SWITCH
+    SWITCH_X                     = 31;
+    SWITCH_Y                     = 32;
+    SWITCH_Z                     = 33;
+    SWITCH_B                     = 34;
+    SWITCH_U                     = 35;
+
+    WIO_5S_UP                    = 31;
+    WIO_5S_LEFT                  = 32;
+    WIO_5S_RIGHT                 = 33;
+    WIO_5S_DOWN                  = 34;
+    WIO_5S_PRESS                 = 35;
   {$endif}
 
 {$endregion}
@@ -147,6 +227,16 @@ type
   end; *)
 
 
+{$ifdef freertos_fat}
+const
+  INTERRUPT_ON_CHANGE     = 2;
+  INTERRUPT_ON_FALLING    = 3;
+  INTERRUPT_ON_RISING     = 4;
+
+//procedure attachInterrupt(ulPin:DWORD; callback:pointer; mode:dword); external name 'attachInterrupt';
+//procedure detachInterrupt(ulPin:DWORD); external name 'detachInterrupt';
+{$endif freertos_fat}
+
 var
   GPIO : TGPIO;
 
@@ -154,6 +244,25 @@ implementation
 procedure TGPIO.Initialize;
 begin
 end;
+
+{$ifdef freertos_fat}
+const
+  PINMODE_INPUT           = 0;
+  PINMODE_OUTPUT          = 1;
+  PINMODE_INPUT_PULLUP    = 2;
+  PINMODE_INPUT_PULLDOWN  = 3;
+
+procedure freertos_pinMode(ulPin:DWORD;ulMode:DWORD); external name 'pinMode';
+procedure freertos_digitalWrite(ulPin:DWORD;ulVal:DWORD); external name 'digitalWrite';
+function  freertos_digitalRead(ulPin:DWORD):integer; external name 'digitalRead';
+
+procedure freertos_analogReference(ulMode:byte); external name 'analogReference';
+procedure freertos_analogWrite(ulPin:DWORD; ulValue:DWORD); external name 'analogWrite';
+function  freertos_analogRead(ulPin:DWORD):DWORD; external name 'analogRead';
+procedure freertos_analogReadResolution(res:integer); external name 'analogReadResolution';
+procedure freertos_analogWriteResolution(res:integer); external name 'analogWriteResolution';
+procedure freertos_analogOutputInit; external name 'analogOutputInit';
+{$endif freertos_fat}
 
 function TGPIO.GetPinMode(const Pin: TPinIdentifier): TPinMode;
 begin
@@ -173,6 +282,52 @@ begin
   end;
 end;
 
+{$ifdef freertos_fat}
+procedure TGPIO.SetPinMode(const Pin: TPinIdentifier; const Value: TPinMode);
+begin
+  case Value of
+    TPinMode.Input     :  freertos_pinMode(Pin,PINMODE_INPUT);
+    TPinMode.Output    :  freertos_pinMode(Pin,PINMODE_OUTPUT);
+  end;
+end;
+
+procedure TGPIO.SetPinValue(const Pin: TPinIdentifier; const Value: TPinValue);
+begin
+  freertos_digitalWrite(Pin,Value);
+end;
+
+procedure TGPIO.SetPinDrive(const Pin: TPinIdentifier; const Value: TPinDrive);
+begin
+  case Value of
+    TPinDrive.None : freertos_pinMode(Pin,PINMODE_INPUT);
+    TPinDrive.PullUp : freertos_pinMode(Pin,PINMODE_INPUT_PULLUP);
+    TPinDrive.PullDown : freertos_pinMode(Pin,PINMODE_INPUT_PULLDOWN);
+  end;
+end;
+
+function TGPIO.GetPinValue(const Pin: TPinIdentifier): TPinValue;
+begin
+  result:=freertos_digitalRead(Pin);
+end;
+
+function TGPIO.GetPinLevel(const Pin: TPinIdentifier): TPinLevel;
+begin
+  if GetPinValue(Pin)=1 then
+    Result := TPinLevel.High
+  else
+    Result := TPinLevel.Low;
+end;
+
+procedure TGPIO.SetPinLevel(const Pin: TPinIdentifier; const Level: TPinLevel);
+begin
+  if Level = TPinLevel.High then
+     SetPinValue(Pin,1)
+  else
+     SetPinValue(Pin,0);
+end;
+
+
+{$else}
 procedure TGPIO.SetPinMode(const Pin: TPinIdentifier; const Value: TPinMode);
 begin
   case Value of
@@ -184,18 +339,7 @@ begin
                            clearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],0);
                            Port.Group[Pin shr 5].DIRSET := 1 shl (Pin and $1f);
     end;
-
-    TPinMode.Analog    : begin
-    end
-    else
-                         begin
-    end;
   end;
-end;
-
-function TGPIO.GetPinValue(const Pin: TPinIdentifier): TPinValue;
-begin
-  Result := GetBitValue(Port.Group[Pin shr 5].&IN,Pin and $1f);
 end;
 
 procedure TGPIO.SetPinValue(const Pin: TPinIdentifier; const Value: TPinValue);
@@ -204,6 +348,19 @@ begin
     Port.Group[Pin shr 5].OUTSET := 1 shl (Pin and $1f)
   else
     Port.Group[Pin shr 5].OUTCLR := 1 shl (Pin and $1f);
+end;
+
+procedure TGPIO.SetPinDrive(const Pin: TPinIdentifier; const Value: TPinDrive);
+begin
+  case Value of
+    TPinDrive.None :     ClearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
+    TPinDrive.PullUp :   SetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
+  end;
+end;
+
+function TGPIO.GetPinValue(const Pin: TPinIdentifier): TPinValue;
+begin
+  Result := GetBitValue(Port.Group[Pin shr 5].&IN,Pin and $1f);
 end;
 
 function TGPIO.GetPinLevel(const Pin: TPinIdentifier): TPinLevel;
@@ -221,6 +378,8 @@ begin
   else
     Port.Group[Pin shr 5].OUTCLR := 1 shl (Pin and $1f);
 end;
+
+{$endif freertos_fat}
 
 procedure TGPIO.SetPinLevelHigh(const Pin: TPinIdentifier);
 begin
@@ -248,14 +407,6 @@ begin
     Result := TPinDrive.PullUp
   else
     Result := TPinDrive.None;
-end;
-
-procedure TGPIO.SetPinDrive(const Pin: TPinIdentifier; const Value: TPinDrive);
-begin
-  case Value of
-    TPinDrive.None :     ClearBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
-    TPinDrive.PullUp :   SetBit(Port.Group[Pin shr 5].PINCFG[Pin and $1f],2);
-  end;
 end;
 
 function TGPIO.GetPinOutputMode(const Pin: TPinIdentifier): TPinOutputMode;
